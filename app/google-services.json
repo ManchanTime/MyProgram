@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "46331575587",
+    "firebase_url": "https://i-edu-2162d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "i-edu-2162d",
+    "storage_bucket": "i-edu-2162d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46331575587:android:151d8788f1227539ae2096",
+        "android_client_info": {
+          "package_name": "com.gachon.i_edu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "46331575587-gs3dh9hj6k4099qpt5m4rusf2ogkvtf4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gachon.i_edu",
+            "certificate_hash": "979d043fd3c9e20941b7471e192f7bd6aa94043b"
+          }
+        },
+        {
+          "client_id": "46331575587-mlss3ud81mauo8fme0079d87bmd6koar.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTXFrsmElPzPguhebEOgWeDhFHpbrnHW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "46331575587-44mvt6v76n0sp0cffubttto9r6nmldp3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "554928216348",
+    "project_id": "i-edu-cd626",
+    "storage_bucket": "i-edu-cd626.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:554928216348:android:8f19c5634bf6724fa8c2d9",
+        "android_client_info": {
+          "package_name": "com.gachon.i_edu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "554928216348-fgtp47r3m7ao46v4599k0gvisjmtv31n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gachon.i_edu",
+            "certificate_hash": "979d043fd3c9e20941b7471e192f7bd6aa94043b"
+          }
+        },
+        {
+          "client_id": "554928216348-vfq7dg5q23jielb4k0gqsv5uv77f0lts.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrrTspc9_jLkofbziqbMX0Mk6QGIdFbDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "554928216348-vfq7dg5q23jielb4k0gqsv5uv77f0lts.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
