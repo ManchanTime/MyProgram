@@ -44,6 +44,7 @@ public class TextViewPagerAdapter extends PagerAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.fragment_banner, fragment_container, false);
             ImageView imageView = (ImageView)view.findViewById(R.id.title);
+            Log.e("Error","position : " + position + "");
             //imageView.setImageResource(ResourcesCompat.getDrawable(getResources(),R.drawable.book_org, null));
             imageView.setImageResource(images[position]);
         }
