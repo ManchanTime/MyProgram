@@ -1,120 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:elevation="10dp"
     android:padding="10dp">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center"
-            android:adjustViewBounds="true"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                app:cardCornerRadius="100dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="내 프로필"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="20dp"
+                    android:textSize="20sp"/>
+                <androidx.cardview.widget.CardView
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    app:cardCornerRadius="100dp">
 
-                <ImageView
-                    android:id="@+id/image_profile"
+                    <ImageView
+                        android:id="@+id/image_profile"
+                        android:scaleType = "centerCrop"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/book_push" />
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/text_profile"
+                    android:layout_width ="wrap_content"
+                    android:layout_height ="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text = "사진 추가하기"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/book_push" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
 
-            </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="닉네임"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edit_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:ems="10"
-                android:hint="이름" />
+                        <EditText
+                            android:id="@+id/edit_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_toLeftOf="@id/btn_check"
+                            android:background="@drawable/custom_edit_text"
+                            android:inputType="text"
+                            android:paddingStart="10dp"
+                            android:textSize="20sp"
+                            tools:text="hi" />
+                        <ImageView
+                            android:id="@+id/btn_check"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_alignParentEnd="true"
+                            android:src="@drawable/complete"/>
+                    </RelativeLayout>
+                    <TextView
+                        android:id="@+id/text_check"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="#0000FF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edit_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:ems="10"
-                android:hint="전화번호"
-                android:inputType="phone" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="목표"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edit_birthday"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:ems="10"
-                android:hint="생년월일" />
+                    <EditText
+                        android:id="@+id/edit_grade"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/custom_edit_text"
+                        android:inputType="text"
+                        android:paddingStart="10dp"
+                        android:textSize="20sp"
+                        tools:text="hi" />
 
-            <EditText
-                android:id="@+id/edit_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:ems="10"
-                android:hint="주소" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="생일"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/text_birthday"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/custom_edit_text"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="학교 or 직장"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/edit_university"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/custom_edit_text"
+                        android:paddingStart="10dp"
+                        android:textSize="20sp"
+                        android:inputType="text"
+                        tools:text="hi" />
+                </LinearLayout>
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_com"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="확인"
+                android:text="완료"
                 android:textColor="@color/black"
                 app:iconTint="@color/black" />
 
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/buttons_card_view"
+    <RelativeLayout
+        android:id="@+id/buttons_choose"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="15dp"
+        android:layout_height="match_parent"
         android:visibility="gone"
-        android:layout_alignParentBottom = "true">
+        android:background="#91646464">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="5dp">
-
-            <Button
-                android:id="@+id/btn_gallery"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:cardCornerRadius="15dp"
+            tools:ignore="DuplicateIds">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="갤러리"
-                android:textColor="@color/black" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp">
+                <Button
+                    android:id="@+id/btn_gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="갤러리"
+                    android:textColor="@color/black" />
 
-            <Button
-                android:id="@+id/btn_picture"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="사진촬영"
-                android:textColor="@color/black" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btn_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="사진촬영" />
 
-    </androidx.cardview.widget.CardView>
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="취소"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 
 </RelativeLayout>

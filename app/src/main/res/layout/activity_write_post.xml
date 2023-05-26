@@ -1,70 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="10dp"
     tools:context=".activity.WritePostActivity">
 
     <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/image_over"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="글 쓰기"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/image_upload"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/complete" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/contents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/edit_subject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="제목"
-            android:inputType="textPersonName" />
+        android:layout_above="@id/below_layout"
+        android:layout_below="@id/main"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/contentsLayout"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <RelativeLayout
+                android:id="@+id/layout_change_subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/text_subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/border_top_bottom"
+                    android:padding="5dp"
+                    android:textSize="20dp"
+                    tools:text="수학" />
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/go" />
+            </RelativeLayout>
+
             <EditText
-                android:id="@+id/edit_content"
+                android:id="@+id/edit_subject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="start|top"
-                android:hint="내용"
-                android:inputType="textMultiLine" />
+                android:background="@drawable/border"
+                android:hint="제목"
+                android:inputType="textPersonName"
+                android:padding="5dp"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/layout_main_contents"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_image_problem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+                <EditText
+                    android:id="@+id/edit_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@null"
+                    android:gravity="start|top"
+                    android:hint="내용"
+                    android:inputType="textMultiLine"
+                    android:lines="5" />
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+    <LinearLayout
+        android:id="@+id/below_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="5dp"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-            <Button
-                android:id="@+id/btn_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/black"
-                android:layout_marginRight="10dp"
-                android:text="이미지" />
+        <Button
+            android:id="@+id/btn_image_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="문제 사진" />
+        <Button
+            android:id="@+id/btn_image_sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="풀이 사진"/>
 
-            <Button
-                android:id="@+id/btn_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/black"
-                android:text="동영상" />
-        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttons_choose"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#91646464">
+
         <androidx.cardview.widget.CardView
-            android:id="@+id/buttons_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             app:cardCornerRadius="15dp"
-            android:visibility="gone"
-            android:layout_alignParentBottom = "true">
+            tools:ignore="DuplicateIds">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp">
+                <Button
+                    android:id="@+id/btn_gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="갤러리" />
+
+                <Button
+                    android:id="@+id/btn_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:text="사진촬영" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttons_backgroundLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#91646464">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:cardCornerRadius="15dp"
+            tools:ignore="DuplicateIds">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,26 +196,160 @@
                 android:padding="5dp">
 
                 <Button
-                    android:id="@+id/btn_gallery"
+                    android:id="@+id/btn_imageEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="갤러리"
-                    android:textColor="@color/black" />
+                    android:text="이미지 수정" />
 
                 <Button
-                    android:id="@+id/btn_picture"
+                    android:id="@+id/btn_imageRemove"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="사진촬영"
-                    android:textColor="@color/black" />
+                    android:text="이미지 제거" />
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-        <Button
-            android:id="@+id/btn_upload"
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttons_choose_changeCG"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#91646464">
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="확인" />
-    </LinearLayout>
-</ScrollView>
+            android:layout_alignParentBottom="true"
+            app:cardCornerRadius="15dp"
+            tools:ignore="DuplicateIds">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <Button
+                    android:id="@+id/btn_change_gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="갤러리"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp" />
+
+                <Button
+                    android:id="@+id/btn_change_camera"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="카메라"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="5dp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/choose_subject"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#91646464">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:cardCornerRadius="15dp"
+            tools:ignore="DuplicateIds">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="과목"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
+
+                    <RadioButton
+                        android:id="@+id/radio_math"
+                        android:layout_width="match_parent"
+                        android:button="@null"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:text="수학"
+                        android:textSize="15sp" />
+
+                    <RadioButton
+                        android:id="@+id/radio_korean"
+                        android:layout_width="match_parent"
+                        android:button="@null"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:text="국어"
+                        android:textSize="15sp" />
+
+                    <RadioButton
+                        android:id="@+id/radio_english"
+                        android:layout_width="match_parent"
+                        android:button="@null"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:text="영어"
+                        android:textSize="15sp" />
+
+                    <RadioButton
+                        android:id="@+id/radio_society"
+                        android:layout_width="match_parent"
+                        android:button="@null"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:text="사회"
+                        android:textSize="15sp" />
+
+                    <RadioButton
+                        android:id="@+id/radio_science"
+                        android:layout_width="match_parent"
+                        android:button="@null"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:text="과학"
+                        android:textSize="15sp" />
+
+                    <RadioButton
+                        android:id="@+id/radio_coding"
+                        android:layout_width="match_parent"
+                        android:button="@null"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:text="코딩"
+                        android:textSize="15sp" />
+
+                    <RadioButton
+                        android:id="@+id/radio_any"
+                        android:layout_width="match_parent"
+                        android:button="@null"
+                        android:drawableRight="@android:drawable/btn_radio"
+                        android:text="기타"
+                        android:textSize="15sp" />
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/radio_choose"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:text="선택하기" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+</RelativeLayout>

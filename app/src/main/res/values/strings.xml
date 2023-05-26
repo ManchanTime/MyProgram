@@ -2,4 +2,9 @@
     <string name="app_name">i-Edu</string>
     <string name="request_permission">This sample needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="communication">다양한 사람들과 소통해요!!</string>
+    <string name="question">문제를 함께 풀고 해결해요!!</string>
+    <string name="announce_level">커뮤니티 문제풀이 탭의 질문글에서 올린 질문의 개수와 올린 응답 수에 따라 티어가 올라요. 친구들의 질문에 답변하고 질문하며 티어를 올려보세요!!</string>
 </resources>

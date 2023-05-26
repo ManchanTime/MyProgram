@@ -1,19 +1,26 @@
 package com.gachon.i_edu.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 
+import com.gachon.i_edu.BasicFunctions;
 import com.gachon.i_edu.R;
+import com.gachon.i_edu.dialog.ProgressDialog;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -29,6 +36,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
@@ -37,20 +47,17 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
 
-public class LoginActivity extends AppCompatActivity {
-    public static Object mContext;
+public class LoginActivity extends BasicFunctions {
     private FirebaseAuth mFirebaseAuth; //파이어베이스 인증
     private DatabaseReference mDatabaseRef; //실시간 데이터베이스
     private EditText mEtEmail, mEtPwd, mEtCheck;
-    private Button mBtnRegister, mBtnLogin, mBtnFind;
+    private Button mBtnRegister, mBtnLogin, mBtnFind; //구글 로그인
     private GoogleSignInClient mGoogleSignInClient; //구글 로그인 객체
     private GoogleSignInAccount gsa;
-    private ImageView kImage;
+    private ImageView kImage, mGoogle;
     private static final int RC_SIGN_IN = 9001;
-    private SignInButton googleSignInButton; //구글 로그인 버튼
-    private final long finishtimeed = 1000;
-    private long presstime = 0;
-
+    private ProgressDialog customProgressDialog;
+    private DocumentSnapshot document;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +70,11 @@ public class LoginActivity extends AppCompatActivity {
         mBtnLogin = findViewById(R.id.btn_login);
         mBtnFind = findViewById(R.id.btn_findPassword);
         kImage = findViewById(R.id.image_kakao);
-        googleSignInButton = findViewById(R.id.button_google_sign);
+        mGoogle = findViewById(R.id.google);
+
+        //로딩창 객체 생성
+        customProgressDialog = new ProgressDialog(this);
+        customProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -71,17 +82,17 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
+        mGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                customProgressDialog.show();
                 gsa = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
 
-                if (gsa != null) { // 로그인 되있는 경우
+                if (gsa != null) { // 로그인 돼있는 경우
                     //로그인 성공
                     Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                    checkInit();
+                    customProgressDialog.cancel();
                 }
                 else
                     signIn();
@@ -98,6 +109,11 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "이메일과 비밀번호를 모두 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
+                    customProgressDialog.show();
+                    //화면터치 방지
+                    customProgressDialog.setCanceledOnTouchOutside(false);
+                    //뒤로가기 방지
+                    customProgressDialog.setCancelable(false);
                     mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(
                             LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -106,15 +122,15 @@ public class LoginActivity extends AppCompatActivity {
                                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
                                         if(user.isEmailVerified()) {
                                             //로그인 성공
-                                            Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                            finish();
+                                            Toast.makeText(LoginActivity.this, "환영합니다!!", Toast.LENGTH_SHORT).show();
+                                            checkInit();
                                         }else{
                                             Toast.makeText(LoginActivity.this, "이메일 인증을 해주세요.", Toast.LENGTH_SHORT).show();
+                                            customProgressDialog.cancel();
                                         }
                                     } else {
                                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
+                                        customProgressDialog.cancel();
                                     }
                                 }
                             });
@@ -148,7 +164,6 @@ public class LoginActivity extends AppCompatActivity {
                     Log.w("gachon", "invoke: " + throwable.getLocalizedMessage());
                 }
                 updateKakaoLoginUi();
-
                 return null;
             }
         };
@@ -192,7 +207,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if (acct != null) {
                 firebaseAuthWithGoogle(acct.getIdToken());
-
                 String personName = acct.getDisplayName();
                 String personGivenName = acct.getGivenName();
                 String personFamilyName = acct.getFamilyName();
@@ -211,16 +225,10 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-//                            updateUI(user);
+                        checkInit();
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
-//                            updateUI(null);
                     }
                 });
     }
@@ -236,8 +244,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.i("gachon", "userimage " + user.getKakaoAccount().getProfile().getProfileImageUrl());
                     // 유저의 이미지 URL을 불러옵니다.
                     // 이 부분에는 로그인이 정상적으로 되었을 경우 어떤 일을 수행할 지 적으면 됩니다.
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    checkInit();
                 }
                 else{
                     // 로그인 시 오류 났을 때
@@ -249,21 +256,66 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void checkInit(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore firebaseFirestore;
+        DocumentReference docRef;
+
+        if(user == null){
+        }else {
+            //로그인 됨
+            firebaseFirestore = FirebaseFirestore.getInstance();
+            docRef = firebaseFirestore.collection("users").document(user.getUid());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        document = task.getResult();
+                        if(document != null) {
+                            if (!document.exists()) {
+                                myStartActivity(MemberInitActivity.class);
+                            }else{
+                                myStartActivity(MainActivity.class);
+                            }
+                            customProgressDialog.cancel();
+                            finish();
+                        }
+                    }else{
+                        customProgressDialog.cancel();
+                    }
+                }
+            });
+        }
+    }
+
+    public void myStartActivity(Class c){
+        Intent intent = new Intent(getApplicationContext(), c);
+        startActivity(intent);
+    }
+
     @Override
     public void onBackPressed() {
-        long tempTime = System.currentTimeMillis();
-        long intervalTime = tempTime - presstime;
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AlertDialogTheme));
+        builder.setTitle("종료할까요?"); // 다이얼로그 제목
+        builder.setCancelable(false);   // 다이얼로그 화면 밖 터치 방지
+        builder.setPositiveButton("예", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                exit();
+            }
+        });
 
-        if (0 <= intervalTime && finishtimeed >= intervalTime)
-        {
-            finishAffinity();
-            System.runFinalization();
-            System.exit(0);
-        }
-        else
-        {
-            presstime = tempTime;
-            Toast.makeText(getApplicationContext(), "한번더 누르시면 앱이 종료됩니다", Toast.LENGTH_SHORT).show();
-        }
+        builder.setNegativeButton("아니요", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setNeutralButton("취소", new AlertDialog.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show(); // 다이얼로그 보이기
     }
 }

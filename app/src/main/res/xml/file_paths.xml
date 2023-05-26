@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <external-path name="이미지뷰파일" path="Android/data/com.gachon.i_edu/files/Pictures" />
+    <external-path name="user_images" path="Android/data/com.gachon.i_edu/files/Pictures" />
 </paths>

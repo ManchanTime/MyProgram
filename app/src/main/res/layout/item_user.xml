@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    app:strokeColor="@android:color/transparent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/layout_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="10dp"
+        app:cardCornerRadius="100dp">
+
+        <ImageView
+            android:id="@+id/image_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/book_push" />
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/layout_image">
+
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="닉네임" />
+
+        <TextView
+            android:id="@+id/text_tier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/text_name"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/text_name"
+            android:background="@drawable/border"
+            android:padding="3dp"
+            android:textSize="10sp"
+            tools:text="티어" />
+
+        <TextView
+            android:id="@+id/text_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_tier"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textSize="13sp"
+            android:layout_marginTop="3dp"
+            tools:text="목표" />
+
+        <TextView
+            android:id="@+id/read_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:gravity="center"
+            tools:text="1"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_custom_text"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+</RelativeLayout>
