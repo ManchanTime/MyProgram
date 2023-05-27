@@ -172,6 +172,7 @@ public class MyPageActivity extends BasicFunctions {
         //어댑터
         userPostAdapter = new UserPostAdapter(this, postList);
         userPostAdapter.setHasStableIds(true);
+
         replyAdapter = new ReplyAdapter(this, replyList);
         replyAdapter.setHasStableIds(true);
         likePostAdapter = new UserPostAdapter(this, likeList);
@@ -205,14 +206,7 @@ public class MyPageActivity extends BasicFunctions {
                 }
             }
         });
-
-        userPostAdapter = new UserPostAdapter(this, postList);
-        userPostAdapter.setHasStableIds(true);
-        recyclerView.setAdapter(userPostAdapter);
-        //recyclerView.setItemViewCacheSize(100);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(userPostAdapter);
+        
         set_up_post();
 
 

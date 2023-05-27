@@ -99,6 +99,9 @@ public class UserPageActivity extends BasicFunctions {
             bundle = new Bundle();
             bundle.putString("uid", uid);
 
+            if(uid.equals(user.getUid())){
+                btnChat.setVisibility(View.GONE);
+            }
             customProgressDialog.show();
             //화면터치 방지
             customProgressDialog.setCanceledOnTouchOutside(false);

@@ -20,21 +20,33 @@ import android.widget.Toast;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.gachon.i_edu.R;
 import com.gachon.i_edu.activity.ContentsActivity;
 import com.gachon.i_edu.activity.MainActivity;
+import com.gachon.i_edu.adpater.HotAdapter;
 import com.gachon.i_edu.adpater.TextViewPagerAdapter;
+import com.gachon.i_edu.info.PostInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,6 +57,9 @@ public class MainFragment extends Fragment {
     MainActivity activity;
     private ViewPager viewPager;
     private TextView textGoal;
+    private RecyclerView recycler_hot;
+    private HotAdapter hotAdapter;
+    private ArrayList<PostInfo> postList = new ArrayList<>();
     //private TextViewPagerAdapter pagerAdapter;
 
 
@@ -53,6 +68,20 @@ public class MainFragment extends Fragment {
     final long DELAY_MS = 500;//delay in milliseconds before task is to be executed
     final long PERIOD_MS = 3000; // time in milliseconds between successive task executions.
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setOn();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(user.getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                textGoal.setText(task.getResult().getData().get("goal").toString());
+            }
+        });
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -74,6 +103,15 @@ public class MainFragment extends Fragment {
         viewPager = rootView.findViewById(R.id.viewPager2);
         pagerAdapter = new TextViewPagerAdapter(rootView.getContext());
         viewPager.setAdapter(pagerAdapter);
+
+        recycler_hot = rootView.findViewById(R.id.recycler_hot);
+        recycler_hot.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        hotAdapter = new HotAdapter(getActivity(), postList);
+        hotAdapter.setHasStableIds(true);
+        recycler_hot.setHasFixedSize(true);
+        recycler_hot.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recycler_hot.setAdapter(hotAdapter);
+
         ImageView imageView;
         ImageView imageView2;
         Button contents, answer;
@@ -89,7 +127,7 @@ public class MainFragment extends Fragment {
                         textGoal.setText(task.getResult().getData().get("goal").toString());
                     }
                 });
-
+        setOn();
         final Handler handler = new Handler();
         final Runnable Update = new Runnable() {
             @Override
@@ -206,6 +244,37 @@ public class MainFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    public void setOn(){
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = firebaseFirestore.collection("posts");
+        collectionReference.orderBy("like_count", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            postList.clear();
+                            for(QueryDocumentSnapshot document : task.getResult()){
+                                postList.add(new PostInfo(
+                                                document.getData().get("id").toString(),
+                                                document.getData().get("publisher").toString(),
+                                                document.getData().get("field").toString(),
+                                                document.getData().get("subject").toString(),
+                                                document.getData().get("title").toString(),
+                                                (ArrayList<String>)document.getData().get("main_content"),
+                                                (ArrayList<String>)document.getData().get("sub_content"),
+                                                new Date(document.getDate("createdAt").getTime()),
+                                                Long.valueOf(String.valueOf(document.getData().get("like_count"))),
+                                                Long.valueOf(String.valueOf(document.getData().get("reply_count")))
+                                        )
+                                );
+                            }
+                            //리사이클러 뷰 초기화
+                            hotAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
     }
 
 }

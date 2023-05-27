@@ -86,15 +86,18 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     public void onBindViewHolder(@NonNull final UserPostViewHolder holder, @SuppressLint("RecyclerView") int position){
         CardView cardView = holder.cardView;
 
-        postId = mDataset.get(position).getId();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        documentReference = firebaseFirestore.collection("users").document(mDataset.get(position).getPublisher());
+        String postId = mDataset.get(position).getId();
         //티어
         TextView tierTextView = cardView.findViewById(R.id.text_tier);
 
-        //좋아요 수 + 댓글 수
+        //작성 유저 프로필
+        TextView nickTextView = cardView.findViewById(R.id.text_user);
+        ImageView profileImage = cardView.findViewById(R.id.image_profile);
+        TextView fieldView = cardView.findViewById(R.id.text_subject);
+        if(mDataset.get(position).getSubject() == null)
+            fieldView.setText(mDataset.get(position).getField());
+        else
+            fieldView.setText(mDataset.get(position).getField() + " " + mDataset.get(position).getSubject());
 
         //좋아요 댓글수ㅣ
         documentReference = firebaseFirestore.collection("users").document(user.getUid());
@@ -121,10 +124,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         });
 
         //유저 프로필
-        TextView nickTextView = cardView.findViewById(R.id.text_user);
-        ImageView profileImage = cardView.findViewById(R.id.image_profile);
-        TextView fieldView = cardView.findViewById(R.id.text_subject);
-        fieldView.setText(mDataset.get(position).getField() + " " + mDataset.get(position).getSubject());
+        documentReference = firebaseFirestore.collection("users").document(mDataset.get(position).getPublisher());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -133,17 +133,18 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                     nickTextView.setText(documentSnapshot.getData().get("name").toString());
                     if(documentSnapshot.getData().get("photoUri") != null) {
                         uri = documentSnapshot.getData().get("photoUri").toString();
-                        Glide.with(activity).load(uri).override(200).into(profileImage);
+                        Glide.with(activity).load(uri).into(profileImage);
                     }
                     tier = documentSnapshot.getData().get("level").toString();
                     tierTextView.setText(tier);
                 }
             }
         });
-
+        
         //제목
         TextView titleTextView = cardView.findViewById(R.id.text_title);
         titleTextView.setText(mDataset.get(position).getTitle());
+
 
         //작성 날짜
         TextView createdAtTextView = cardView.findViewById(R.id.text_createdAt);
@@ -171,12 +172,11 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         TextView contentTextView = contentsLayout.findViewById(R.id.text_content);
         contentTextView.setText(contentsList.get(0));
 
-        pictureLayout.removeAllViews();
-
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0,600);
         layoutParams.weight = 1f;
         layoutParams.rightMargin=20;
         int contentsSize = contentsList.size();
+        pictureLayout.removeAllViews();
         if(pictureLayout.getChildCount() == 0){
             if (contentsSize > 1) {
                 for (int i = 1; i < contentsSize; i++) {

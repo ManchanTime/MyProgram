@@ -17,13 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/text_goal"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:text="목표"
-                android:textSize="70dp"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="50sp" />
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewPager2"
@@ -74,19 +75,19 @@
                         android:layout_height="0dp" />
                 </RadioGroup>
 
-<!--                <Button-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="a"-->
-<!--                    android:background="@drawable/btn_rec"/>-->
-<!--                <Button-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="a"/>-->
-<!--                <Button-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="a"/>-->
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="a"
+                    android:background="@drawable/btn_rec"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="a"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="a"/>
                 <Button
                     android:id="@+id/answer"
                     android:layout_width="wrap_content"
@@ -156,15 +157,24 @@
                 </HorizontalScrollView>
             </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/hot_border"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
+            <LinearLayout
+                android:id="@+id/layout_hot_border"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:text="핫 게시판"
-                android:textSize="50sp" />
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="핫 게시판"
+                    android:background="@drawable/border_rec"
+                    android:textSize="30sp" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_hot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

@@ -138,7 +138,6 @@ public class ChattingActivity extends BasicFunctions {
         recyclerView = findViewById(R.id.recycler);
 
         //아답터 연결
-
         firestore = FirebaseFirestore.getInstance();
         getList();
     }
@@ -180,15 +179,6 @@ public class ChattingActivity extends BasicFunctions {
                             storeIndex.add(msgName);
                             messageAdapter.notifyItemInserted(messageItems.size() - 1);
                         }
-
-                        //5.아답터에게 데이터가 추가 되었다고 공지 -> 해야 화면 갱신됨
-                        //messageAdapter.notifyItemInserted(messageItems.size() - 1);
-
-                        // notifyDataSetChanged() : 여러개가 한번에 여러개 바뀌었을 때
-                        //notifyItemRangeInserted() : 현재 for문 안에서 하나 바뀔때 마다 알려주면 됨
-                        //notifyItemRangeInserted(바뀐위치)
-                        //바뀐위치는 마지막 번호 = messageItems.size()-1
-
                         //리사이클러뷰의 스크롤위치 가장 아래로 이동
                         recyclerView.scrollToPosition(messageItems.size() - 1);
                     }
@@ -204,10 +194,13 @@ public class ChattingActivity extends BasicFunctions {
         }
         //파이어베이스 디비에 저장할 데이터들 준비 (사진, 이름 메세지 시간)
         String message;
-        if(uri != null)
+        if(uri != null) {
             message = uri.toString();
-        else
+        }
+        else {
             message = editMessage.getText().toString();
+            editMessage.setText("");
+        }
         String profileUrl = photoUrl;
         //메세지를 작성 시간을 문자열 [시:분]
         Calendar calendar = Calendar.getInstance();
@@ -221,9 +214,9 @@ public class ChattingActivity extends BasicFunctions {
         chatRef.document("MSG_"+ System.currentTimeMillis()).set(item);
 
         //다음 메세지를 입력이 수월하도록 EditText에 있는 글씨 삭제
-        editMessage.setText("");
         layoutImage.setVisibility(View.GONE);
         getUri = null;
+        image_count = 0;
         customProgressDialog.cancel();
     }
 
@@ -249,7 +242,7 @@ public class ChattingActivity extends BasicFunctions {
             case R.id.btn_gallery:
                 goGallery(REQUEST_GALLERY);
                 break;
-            case R.id.btn_picture:
+            case R.id.btn_camera:
                 if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     goCamera(REQUEST_CAMERA);
                 }else{

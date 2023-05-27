@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -39,6 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
@@ -124,6 +126,7 @@ public class LoginActivity extends BasicFunctions {
                                             //로그인 성공
                                             Toast.makeText(LoginActivity.this, "환영합니다!!", Toast.LENGTH_SHORT).show();
                                             checkInit();
+
                                         }else{
                                             Toast.makeText(LoginActivity.this, "이메일 인증을 해주세요.", Toast.LENGTH_SHORT).show();
                                             customProgressDialog.cancel();
@@ -180,10 +183,7 @@ public class LoginActivity extends BasicFunctions {
             }
         });
         updateKakaoLoginUi();
-
-
     }
-
 
     private void signIn(){
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -265,6 +265,14 @@ public class LoginActivity extends BasicFunctions {
         }else {
             //로그인 됨
             firebaseFirestore = FirebaseFirestore.getInstance();
+            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                @Override
+                public void onComplete(@NonNull Task<String> task) {
+                    String fcmToken = task.getResult();
+                    DocumentReference documentReference = firebaseFirestore.collection("users").document(user.getUid());
+                    documentReference.update("fcmToken", fcmToken);
+                }
+            });
             docRef = firebaseFirestore.collection("users").document(user.getUid());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override

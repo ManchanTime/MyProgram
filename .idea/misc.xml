@@ -3,8 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/border.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/border_my.xml" value="0.1425" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/border_rec.xml" value="0.1425" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/border_rec2.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/border_top.xml" value="0.1425" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/btn_rec.xml" value="0.1425" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/rec.xml" value="0.1425" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable-v24/setting_user_size.xml" value="0.1425" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/background.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/bg_custom_text.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/border.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/border_bottom_color_background.xml" value="0.1425" />
@@ -20,6 +27,8 @@
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/custom_edit_text.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/custom_progress_bar.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/dividor.xml" value="0.1" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1425" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/mypage_btn.xml" value="0.1425" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/radio_custom.xml" value="0.1" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/round_edit_text.xml" value="0.1425" />

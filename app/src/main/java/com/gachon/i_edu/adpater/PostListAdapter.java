@@ -61,7 +61,6 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
         this.activity = activity;
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        setHasStableIds(true);
     }
 
     @NonNull
@@ -274,10 +273,5 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
             image_like.setImageResource(R.drawable.like);
             return true;
         }
-    }
-
-    public void setItems(ArrayList<PostInfo> list){
-        mDataset = list;
-        notifyDataSetChanged();
     }
 }

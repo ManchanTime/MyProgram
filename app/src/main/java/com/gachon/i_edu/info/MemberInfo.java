@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MemberInfo implements Serializable {
+    private String fcmToken;
     private String uid;
     private String photo_uri;
     private String name;
@@ -27,6 +28,13 @@ public class MemberInfo implements Serializable {
         this.solve = solve;
         this.question = question;
         this.like_post = like_post;
+    }
+
+    public String getFcmToken(){
+        return fcmToken;
+    }
+    public void setFcmToken(String fcmToken){
+        this.fcmToken = fcmToken;
     }
 
     public String getUid(){

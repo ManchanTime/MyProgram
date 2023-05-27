@@ -29,6 +29,8 @@ android {
 }
 
 dependencies {
+    //유투브 api
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.0.1'
     //파이어베이스 FCM
     implementation 'com.google.firebase:firebase-messaging:23.1.2'
     implementation 'com.google.android.gms:play-services-auth:20.5.0'

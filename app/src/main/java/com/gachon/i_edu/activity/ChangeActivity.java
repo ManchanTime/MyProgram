@@ -60,7 +60,6 @@ public class ChangeActivity extends BasicFunctions {
     private String title_m;
     private String origin;
     private TextView textCompare;
-    private boolean result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +112,7 @@ public class ChangeActivity extends BasicFunctions {
             @Override
             public void afterTextChanged(Editable editable) {
                 String text = edit_change.getText().toString();
-                checkName(text);
-                if(!text.equals("") && !text.equals(origin) && result){
+                if(!text.equals("") && !text.equals(origin)) {
                     btn_store.setTextColor(Color.BLACK);
                     btn_store.setEnabled(true);
                 }else{
@@ -133,8 +131,9 @@ public class ChangeActivity extends BasicFunctions {
                 finish();
                 break;
             case R.id.btn_store:
-                setStringData();
-                finish();
+                if(title_m.equals("name"))
+                    checkName(edit_change.getText().toString());
+                else setStringData();
                 break;
         }
     };
@@ -149,6 +148,7 @@ public class ChangeActivity extends BasicFunctions {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(ChangeActivity.this, "변경 완료", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
     }
@@ -164,12 +164,11 @@ public class ChangeActivity extends BasicFunctions {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
                             if(task.getResult().size() == 0){
-                                textCompare.setVisibility(View.VISIBLE);
-                                result = true;
+                                textCompare.setVisibility(View.GONE);
+                                setStringData();
                             }
                             else{
-                                textCompare.setVisibility(View.GONE);
-                                result = false;
+                                textCompare.setVisibility(View.VISIBLE);
                             }
                         }
                     }

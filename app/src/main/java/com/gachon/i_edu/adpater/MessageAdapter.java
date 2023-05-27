@@ -94,6 +94,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.VH> {
                         String message = item.getMessage();
                         if(Patterns.WEB_URL.matcher(message).matches()){
                             Glide.with(context).load(message).into(holder.imageContent);
+                            holder.tvMsg.setVisibility(View.GONE);
                             holder.layout_image_take.setVisibility(View.VISIBLE);
                             holder.imageContent.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -104,6 +105,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.VH> {
                                 }
                             });
                         }else{
+                            holder.layout_image_take.setVisibility(View.GONE);
                             holder.tvMsg.setVisibility(View.VISIBLE);
                             holder.tvMsg.setText(item.getMessage());
                         }
