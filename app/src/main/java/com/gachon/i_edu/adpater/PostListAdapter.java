@@ -3,11 +3,14 @@ package com.gachon.i_edu.adpater;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gachon.i_edu.activity.UserPageActivity;
+import com.gachon.i_edu.dialog.ProgressDialog;
 import com.gachon.i_edu.info.PostInfo;
 import com.gachon.i_edu.R;
 import com.gachon.i_edu.activity.ImageActivity;
@@ -40,6 +44,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
     private final Activity activity;
     private DocumentReference documentReference;
     private FirebaseFirestore firebaseFirestore;
+    private ProgressDialog customProgressDialog;
     private FirebaseUser user;
     private ArrayList<String> likeList;
 
@@ -59,8 +64,27 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
     public PostListAdapter(Activity activity, ArrayList<PostInfo> myDataset){
         mDataset = myDataset;
         this.activity = activity;
+        customProgressDialog = new ProgressDialog(activity);
+        customProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        documentReference = firebaseFirestore.collection("users").document(user.getUid());
+        customProgressDialog.show();
+        //화면터치 방지
+        customProgressDialog.setCanceledOnTouchOutside(false);
+        //뒤로가기 방지
+        customProgressDialog.setCancelable(false);
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    likeList = (ArrayList<String>) task.getResult().getData().get("like_post");
+                }
+                customProgressDialog.cancel();
+            }
+        });
     }
 
     @NonNull
@@ -100,26 +124,17 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
             fieldView.setText(mDataset.get(position).getField() + " " + mDataset.get(position).getSubject());
 
         //좋아요 댓글수ㅣ
-        documentReference = firebaseFirestore.collection("users").document(user.getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        //좋아요 수 + 댓글 수
+        TextView countLike = cardView.findViewById(R.id.text_count_like);
+        TextView countReply = cardView.findViewById(R.id.text_info);
+        countReply.setText(mDataset.get(position).getReply_count() + "");
+        ImageView likeImage = cardView.findViewById(R.id.image_like);
+        setStringData(postId,likeImage);
+        countLike.setText(mDataset.get(position).getLike_count()+"");
+        likeImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    likeList = (ArrayList<String>) task.getResult().getData().get("like_post");
-                    //좋아요 수 + 댓글 수
-                    TextView countLike = cardView.findViewById(R.id.text_count_like);
-                    TextView countReply = cardView.findViewById(R.id.text_info);
-                    countReply.setText(mDataset.get(position).getReply_count() + "");
-                    ImageView likeImage = cardView.findViewById(R.id.image_like);
-                    setStringData(postId,likeImage);
-                    countLike.setText(mDataset.get(position).getLike_count()+"");
-                    likeImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            checkLike(setStringData(postId, likeImage), likeImage, countLike, position);
-                        }
-                    });
-                }
+            public void onClick(View view) {
+                checkLike(setStringData(postId, likeImage), likeImage, countLike, position);
             }
         });
 
@@ -220,7 +235,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
 
     @Override
     public long getItemId(int position){
-        return position;
+        return mDataset.get(position).hashCode();
     }
 
     @Override

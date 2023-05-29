@@ -41,7 +41,7 @@
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/tab_selector.xml" value="0.1" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/drawable/tab_style.xml" value="0.1415" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_change.xml" value="0.24947916666666667" />
-        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_chatting.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_chatting.xml" value="0.2" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_contents.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_image.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_level.xml" value="0.2" />
@@ -57,6 +57,7 @@
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_register.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_review_note.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_search.xml" value="0.264" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_search_user.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_user_info_setting.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_user_page.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/activity_write_post.xml" value="0.24124513618677043" />
@@ -66,7 +67,7 @@
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_chatting.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_communication.xml" value="0.23489583333333333" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_entire_chat.xml" value="0.24947916666666667" />
-        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_main.xml" value="0.1990521327014218" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_main.xml" value="0.264" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_my_page.xml" value="0.2" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_personal_chat.xml" value="0.23489583333333333" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_post_list.xml" value="0.24947916666666667" />
@@ -74,15 +75,18 @@
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_user_list.xml" value="0.23489583333333333" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_user_page.xml" value="0.2" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_user_post.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_user_post2.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/fragment_user_reply.xml" value="0.24947916666666667" />
-        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/item_chat_my.xml" value="0.176" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/item_chat_my.xml" value="0.264" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/item_chat_other.xml" value="0.4" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/item_memo.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/item_post.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/item_reply.xml" value="0.264" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/item_user.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/reply_post.xml" value="0.2484375" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/test.xml" value="0.24947916666666667" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/tool_bar.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/tool_bar_chat.xml" value="0.2" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/layout/tool_bar_post_list.xml" value="0.2484375" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/menu/menu_post_list.xml" value="0.2484375" />
         <entry key="..\:/Users/lych0/AndroidStudioProjects/iEdu(3)/app/src/main/res/menu/menu_reply.xml" value="0.2484375" />

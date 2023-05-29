@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.gachon.i_edu.R;
 import com.gachon.i_edu.adpater.PostListAdapter;
@@ -46,7 +48,6 @@ public class CommunicationFragment extends Fragment {
     private CollectionReference collectionReference;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ArrayList<String> likeList;
     private ArrayList<PostInfo> postList = new ArrayList<>();
     private PostListAdapter postListAdapter;
     private ProgressDialog customProgressDialog;
@@ -112,8 +113,6 @@ public class CommunicationFragment extends Fragment {
                 }
             }
         });
-
-        set_up();
         customProgressDialog.cancel();
         return view;
     }
@@ -187,5 +186,4 @@ public class CommunicationFragment extends Fragment {
                     }
                 });
     }
-
 }

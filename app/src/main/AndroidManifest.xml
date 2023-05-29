@@ -4,6 +4,8 @@
     package="com.gachon.i_edu">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -25,10 +27,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Firebase"
         tools:targetApi="33">
+        <activity
+            android:name=".activity.SearchUserActivity"
+            android:exported="false" />
 
         <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBb_L_Jj-SRtR08eEk0U5XcxFxq1WwlLMg"/>
+            android:value="AIzaSyBb_L_Jj-SRtR08eEk0U5XcxFxq1WwlLMg" />
 
         <service
             android:name=".service.FirebaseMessagingService"

@@ -50,7 +50,6 @@ public class UserPostFragment extends Fragment {
     private ProgressDialog customProgressDialog;
     private UserPostAdapter userPostAdapter;
     private ArrayList<PostInfo> postList = new ArrayList<>();
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,45 +62,29 @@ public class UserPostFragment extends Fragment {
         customProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         customProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
-        customProgressDialog.show();
-        //화면터치 방지
-        customProgressDialog.setCanceledOnTouchOutside(false);
-        //뒤로가기 방지
-        customProgressDialog.setCancelable(false);
-
-        Bundle bundle = getArguments();
-        uid = bundle.getString("uid");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        DocumentReference documentReference = firebaseFirestore.collection("users").document(user.getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        swipeRefreshLayout = view.findViewById(R.id.layout_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                DocumentSnapshot documentSnapshot = task.getResult();
-                likeList = (ArrayList<String>) documentSnapshot.getData().get("like_post");
-                swipeRefreshLayout = view.findViewById(R.id.layout_refresh);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        refresh_top();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-
-                //리사이클러 뷰 초기화
-                recyclerView = view.findViewById(R.id.recycler_post_list);
-                userPostAdapter = new UserPostAdapter(getActivity(), postList);
-                userPostAdapter.setHasStableIds(true);
-                recyclerView.setAdapter(userPostAdapter);
-                //recyclerView.setItemViewCacheSize(100);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                recyclerView.setAdapter(userPostAdapter);
-
-                set_up();
-                customProgressDialog.cancel();
+            public void onRefresh() {
+                refresh_top();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
+
+        //리사이클러 뷰 초기화
+        recyclerView = view.findViewById(R.id.recycler_post_list);
+        userPostAdapter = new UserPostAdapter(getActivity(), postList);
+        userPostAdapter.setHasStableIds(true);
+        recyclerView.setAdapter(userPostAdapter);
+        //recyclerView.setItemViewCacheSize(100);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(userPostAdapter);
+
+        set_up();
+        customProgressDialog.cancel();
+
         return view;
     }
 
@@ -112,7 +95,11 @@ public class UserPostFragment extends Fragment {
 
     private void set_up(){
         //문서 가져오기
-        Date date = postList.size() == 0 ? new Date() : postList.get(postList.size()-1).getCreatedAt();
+        customProgressDialog.show();
+        //화면터치 방지
+        customProgressDialog.setCanceledOnTouchOutside(false);
+        //뒤로가기 방지
+        customProgressDialog.setCancelable(false);
         collectionReference = firebaseFirestore.collection("posts");
         collectionReference.whereEqualTo("publisher",uid)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
@@ -137,15 +124,20 @@ public class UserPostFragment extends Fragment {
                                 );
                             }
                             //리사이클러 뷰 초기화
-
                             userPostAdapter.notifyDataSetChanged();
                         }
+                        customProgressDialog.cancel();
                     }
                 });
     }
 
     private void refresh_top(){
         //문서 가져오기
+        customProgressDialog.show();
+        //화면터치 방지
+        customProgressDialog.setCanceledOnTouchOutside(false);
+        //뒤로가기 방지
+        customProgressDialog.setCancelable(false);
         Date date = postList.size() == 0 ? new Date() : postList.get(0).getCreatedAt();
         collectionReference = firebaseFirestore.collection("posts");
         collectionReference.orderBy("createdAt", Query.Direction.ASCENDING).whereGreaterThan("createdAt", date)
@@ -172,6 +164,7 @@ public class UserPostFragment extends Fragment {
                             //리사이클러 뷰 초기화
                             userPostAdapter.notifyDataSetChanged();
                         }
+                        customProgressDialog.cancel();
                     }
                 });
     }

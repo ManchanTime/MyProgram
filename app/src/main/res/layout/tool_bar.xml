@@ -51,5 +51,13 @@
             android:visibility="gone"
             android:src="@drawable/menu_icon"/>
 
+        <ImageView
+            android:id="@+id/btn_search"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/search_org"/>
+
     </RelativeLayout>
 </androidx.appcompat.widget.Toolbar>

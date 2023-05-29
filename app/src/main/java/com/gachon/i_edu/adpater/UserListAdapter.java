@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.zip.Inflater;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserListViewHolder> {
-    private final ArrayList<MemberInfo> mDataset;
+    private ArrayList<MemberInfo> mDataset;
     private final Activity activity;
     private FirebaseUser user;
     private ProgressDialog customProgressDialog;
@@ -134,6 +134,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
         TextView textCount = relativeLayout.findViewById(R.id.read_count);
         checkCount(position, textCount);
     }
+
+    public void  filterList(ArrayList<MemberInfo> filteredList) {
+        mDataset = filteredList;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemCount(){

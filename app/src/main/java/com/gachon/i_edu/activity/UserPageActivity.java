@@ -102,11 +102,6 @@ public class UserPageActivity extends BasicFunctions {
             if(uid.equals(user.getUid())){
                 btnChat.setVisibility(View.GONE);
             }
-            customProgressDialog.show();
-            //화면터치 방지
-            customProgressDialog.setCanceledOnTouchOutside(false);
-            //뒤로가기 방지
-            customProgressDialog.setCancelable(false);
 
             FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
             DocumentReference documentReference = firebaseFirestore.collection("users").document(uid);
@@ -223,6 +218,11 @@ public class UserPageActivity extends BasicFunctions {
     }
     private void set_up_post(){
         //문서 가져오기
+        customProgressDialog.show();
+        //화면터치 방지
+        customProgressDialog.setCanceledOnTouchOutside(false);
+        //뒤로가기 방지
+        customProgressDialog.setCancelable(false);
         updating = true;
         firebaseFirestore = FirebaseFirestore.getInstance();
         Date date = postList.size() == 0 ? new Date() : postList.get(postList.size()-1).getCreatedAt();
@@ -254,11 +254,17 @@ public class UserPageActivity extends BasicFunctions {
                             userPostAdapter.notifyDataSetChanged();
                         }
                         updating = false;
+                        customProgressDialog.cancel();
                     }
                 });
     }
 
     private void refresh_top_post(){
+        customProgressDialog.show();
+        //화면터치 방지
+        customProgressDialog.setCanceledOnTouchOutside(false);
+        //뒤로가기 방지
+        customProgressDialog.setCancelable(false);
         //문서 가져오기
         collectionReference = firebaseFirestore.collection("posts");
         collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).whereEqualTo("publisher",uid)
@@ -286,12 +292,18 @@ public class UserPageActivity extends BasicFunctions {
                             //리사이클러 뷰 초기화
                             userPostAdapter.notifyDataSetChanged();
                         }
+                        customProgressDialog.cancel();
                     }
                 });
     }
 
     private void set_up_reply(){
         //문서 가져오기
+        customProgressDialog.show();
+        //화면터치 방지
+        customProgressDialog.setCanceledOnTouchOutside(false);
+        //뒤로가기 방지
+        customProgressDialog.setCancelable(false);
         updating = true;
         Date date = replyList.size() == 0 ? new Date() : replyList.get(replyList.size()-1).getCreatedAt();
         collectionReference = firebaseFirestore.collection("replies");
@@ -319,6 +331,7 @@ public class UserPageActivity extends BasicFunctions {
                             }
                             //리사이클러 뷰 초기화
                             replyAdapter.notifyDataSetChanged();
+                            customProgressDialog.cancel();
                         }
                         updating = false;
                     }
@@ -326,6 +339,11 @@ public class UserPageActivity extends BasicFunctions {
     }
 
     private void refresh_top_reply() {
+        customProgressDialog.show();
+        //화면터치 방지
+        customProgressDialog.setCanceledOnTouchOutside(false);
+        //뒤로가기 방지
+        customProgressDialog.setCancelable(false);
         //문서 가져오기
         collectionReference = firebaseFirestore.collection("replies");
         collectionReference.whereEqualTo("publisher", uid)
@@ -352,6 +370,7 @@ public class UserPageActivity extends BasicFunctions {
                             }
                             //리사이클러 뷰 초기화
                             replyAdapter.notifyDataSetChanged();
+                            customProgressDialog.cancel();
                         }
                     }
                 });

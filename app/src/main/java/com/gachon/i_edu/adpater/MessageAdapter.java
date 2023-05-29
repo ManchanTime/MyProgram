@@ -42,6 +42,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.VH> {
     final int TYPE_OTHER=1;
 
     public MessageAdapter(Context context, ArrayList<ChatInfo> messageItems, MemberInfo other, String chatName) {
+        setHasStableIds(true);
         this.context = context;
         this.messageItems = messageItems;
         this.other = other;
@@ -132,7 +133,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.VH> {
 
     @Override
     public long getItemId(int position){
-        return position;
+        return messageItems.get(position).hashCode();
     }
 
     class VH extends RecyclerView.ViewHolder {

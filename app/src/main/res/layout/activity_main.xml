@@ -69,10 +69,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="35dp"
                     android:background="@drawable/bg_custom_text"
+                    android:visibility="gone"
                     android:padding="3dp"
                     android:text="0"
                     android:textColor="@color/white"
                     android:textSize="15sp" />
+
                 <ImageView
                     android:id="@+id/image_chat"
                     android:layout_width="40dp"

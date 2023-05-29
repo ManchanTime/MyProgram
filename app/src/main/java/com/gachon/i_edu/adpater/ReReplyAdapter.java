@@ -189,8 +189,8 @@ public class ReReplyAdapter extends RecyclerView.Adapter<ReReplyAdapter.ReReplyL
                     documentReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
+                            removeItem(position);
                             deleteLayout.setVisibility(View.GONE);
-                            contentTextView.setText("삭제된 댓글입니다.");
                             Toast.makeText(activity, "삭제 완료", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -219,6 +219,12 @@ public class ReReplyAdapter extends RecyclerView.Adapter<ReReplyAdapter.ReReplyL
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    public void removeItem(int position){
+        mDataset.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 
     private void setClick(ImageView imageLike, ArrayList<String> likeList,TextView textLike, int position){

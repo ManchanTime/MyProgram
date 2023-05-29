@@ -1,6 +1,10 @@
 package com.gachon.i_edu.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,14 +13,28 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.speech.tts.TextToSpeech;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gachon.i_edu.R;
+import com.gachon.i_edu.activity.MyPageActivity;
+import com.gachon.i_edu.activity.SearchActivity;
+import com.gachon.i_edu.activity.SearchUserActivity;
 import com.gachon.i_edu.adpater.UserListAdapter;
+import com.gachon.i_edu.dialog.ProgressDialog;
 import com.gachon.i_edu.info.MemberInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,17 +45,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 
 public class PersonalChatFragment extends Fragment {
 
     private View view;
+    private ArrayList<MemberInfo> userList, filteredList;
+    private ProgressDialog customProgressDialog;
     private RecyclerView recyclerView;
     private UserListAdapter userListAdapter;
-    private ArrayList<MemberInfo> userList = new ArrayList<>();
-    private FirebaseFirestore firebaseFirestore;
-    private CollectionReference collectionReference;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView textTitle;
+    private ImageView btnSearch, btnMyPage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +66,21 @@ public class PersonalChatFragment extends Fragment {
         Context contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.Theme_Firebase);
         LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
         view = localInflater.inflate(R.layout.fragment_personal_chat, container, false);
+
+        //로딩창 객체 생성
+        customProgressDialog = new ProgressDialog(getActivity());
+        customProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
+        userList = new ArrayList<>();
+        filteredList = new ArrayList<>();
+
+        textTitle = view.findViewById(R.id.text_title);
+        textTitle.setText("채팅");
+        btnSearch = view.findViewById(R.id.btn_search);
+        btnSearch.setOnClickListener(onClickListener);
+        btnMyPage = view.findViewById(R.id.btn_my_page);
+        btnMyPage.setOnClickListener(onClickListener);
 
         //어댑터
         userListAdapter = new UserListAdapter(getActivity(), userList);
@@ -72,12 +108,17 @@ public class PersonalChatFragment extends Fragment {
 
     private void setOn(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        collectionReference = firebaseFirestore.collection("users");
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference = firebaseFirestore.collection("users");
         collectionReference.whereNotEqualTo("uid", user.getUid()).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        customProgressDialog.show();
+                        //화면터치 방지
+                        customProgressDialog.setCanceledOnTouchOutside(false);
+                        //뒤로가기 방지
+                        customProgressDialog.setCancelable(false);
                         if(task.isSuccessful()){
                             userList.clear();
                             for (QueryDocumentSnapshot document : task.getResult()) {
@@ -96,8 +137,23 @@ public class PersonalChatFragment extends Fragment {
                             }
                             //리사이클러 뷰 초기화
                             userListAdapter.notifyDataSetChanged();
+                            customProgressDialog.cancel();
                         }
                     }
                 });
     }
+
+    View.OnClickListener onClickListener = (v) -> {
+        Intent intent;
+        switch (v.getId()){
+            case R.id.btn_search:
+                intent = new Intent(getActivity(), SearchUserActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btn_my_page:
+                 intent = new Intent(getActivity(), MyPageActivity.class);
+                 startActivity(intent);
+                 break;
+        }
+    };
 }

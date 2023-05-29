@@ -1,6 +1,7 @@
 package com.gachon.i_edu.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.gachon.i_edu.adpater.PostListAdapter;
 import com.gachon.i_edu.dialog.ProgressDialog;
 import com.gachon.i_edu.info.PostInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -138,7 +140,6 @@ public class QuestionFragment extends Fragment {
         customProgressDialog.setCanceledOnTouchOutside(false);
         //뒤로가기 방지
         customProgressDialog.setCancelable(false);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
         //리사이클러 뷰 초기화
         recyclerView = view.findViewById(R.id.recycler_board_list);
@@ -232,6 +233,12 @@ public class QuestionFragment extends Fragment {
                                 postListAdapter.notifyDataSetChanged();
                             }
                             updating = false;
+                            customProgressDialog.cancel();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("Err","Err");
                             customProgressDialog.cancel();
                         }
                     });

@@ -29,6 +29,10 @@ android {
 }
 
 dependencies {
+    //구글맵
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.material:material:1.10.0-alpha03'
     //유투브 api
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.0.1'
     //파이어베이스 FCM

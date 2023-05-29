@@ -11,8 +11,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.service.autofill.CharSequenceTransformation;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
@@ -78,6 +81,7 @@ public class ChattingActivity extends BasicFunctions {
     //리사이클러뷰에 넣어줄 아이템
     ArrayList<ChatInfo> messageItems = new ArrayList<>();
     ArrayList<String> storeIndex = new ArrayList<>();
+    ArrayList<String> storeMessage = new ArrayList<>();
     MessageAdapter messageAdapter;
     private RecyclerView recyclerView;
     private TextView textName;
@@ -85,6 +89,9 @@ public class ChattingActivity extends BasicFunctions {
     private EditText editMessage;
     private String photoUrl;
     private String chatName;
+    private ImageView btnSearch, btnCancel, btnLow;
+    private EditText editSearch;
+    private RelativeLayout layoutSearch;
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_CAMERA = 1;
     private static MemberInfo getMember;
@@ -112,6 +119,44 @@ public class ChattingActivity extends BasicFunctions {
         }else
             chatName = "Chat_" + getMember.getUid() + "_" + user.getUid();
 
+        layoutSearch = findViewById(R.id.layout_search);
+        btnSearch = findViewById(R.id.btn_search);
+        btnSearch.setVisibility(View.VISIBLE);
+        btnSearch.setOnClickListener(onClickListener);
+        btnCancel = findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(onClickListener);
+        btnSearch.setOnClickListener(onClickListener);
+        btnLow = findViewById(R.id.btn_low);
+        btnLow.setOnClickListener(onClickListener);
+        editSearch = findViewById(R.id.edit_search);
+        editSearch.setText("");
+        editSearch.setImeOptions(EditorInfo.IME_ACTION_DONE); //키보드 다음 버튼을 완료 버튼으로 바꿔줌
+        editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                String search_data = v.getText().toString();
+                if(actionId == EditorInfo.IME_ACTION_DONE && !search_data.equals(""))
+                {
+                    customProgressDialog.show();
+                    //화면터치 방지
+                    customProgressDialog.setCanceledOnTouchOutside(false);
+                    //뒤로가기 방지
+                    customProgressDialog.setCancelable(false);
+                    if (storeMessage.contains(search_data)) {
+                        int index = storeMessage.indexOf(search_data);
+                        Log.e("index",storeMessage.get(index) + " " + index);
+                        recyclerView.scrollToPosition(index);
+                    }
+                    customProgressDialog.cancel();
+                    return true;
+                }else{
+                    Toast.makeText(getApplicationContext(),"검색어를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
         layoutChoose = findViewById(R.id.layout_choose);
         layoutImage = findViewById(R.id.layout_set_image);
         btnBack = findViewById(R.id.btn_back);
@@ -136,6 +181,26 @@ public class ChattingActivity extends BasicFunctions {
         btnComplete.setOnClickListener(onClickListener);
         editMessage = findViewById(R.id.edit_message);
         recyclerView = findViewById(R.id.recycler);
+        recyclerView.setItemViewCacheSize(100);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+
+                if (totalItemCount - 2 <= lastVisibleItemPosition) {
+                    btnLow.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         //아답터 연결
         firestore = FirebaseFirestore.getInstance();
@@ -173,8 +238,9 @@ public class ChattingActivity extends BasicFunctions {
                         if (storeIndex.contains(msgName)) {
                             int index = storeIndex.indexOf(msgName);
                             messageItems.get(index).setRead(true);
-                            messageAdapter.notifyDataSetChanged();
+                            messageAdapter.notifyItemChanged(index);
                         } else {
+                            storeMessage.add(message);
                             messageItems.add(new ChatInfo(msgName, uid, message, profileUrl, time, read));
                             storeIndex.add(msgName);
                             messageAdapter.notifyItemInserted(messageItems.size() - 1);
@@ -252,8 +318,21 @@ public class ChattingActivity extends BasicFunctions {
             case R.id.btn_complete:
                 startUpload();
                 break;
+            case R.id.btn_search:
+                layoutSearch.setVisibility(View.VISIBLE);
+                btnComplete.setVisibility(View.GONE);
+                break;
+            case R.id.btn_cancel:
+                btnComplete.setVisibility(View.VISIBLE);
+                editSearch.setText("");
+                layoutSearch.setVisibility(View.GONE);
+                break;
+            case R.id.btn_low:
+                recyclerView.scrollToPosition(messageItems.size()-1);
+                break;
         }
     };
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
