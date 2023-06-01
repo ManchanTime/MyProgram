@@ -82,15 +82,15 @@ public class MemoAdapter extends RecyclerView.Adapter<MemoAdapter.MemoViewHolder
         return mDataset.size();
     }
 
-//    @Override
-//    public long getItemId(int position){
-//        return position;
-//    }
-//
-//    @Override
-//    public int getItemViewType(int position) {
-//        return position;
-//    }
+    @Override
+    public long getItemId(int position){
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public void removeItem(int position){
         mDataset.remove(position);

@@ -18,7 +18,7 @@
 
     <application
         android:name=".kakaoApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -36,7 +36,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBb_L_Jj-SRtR08eEk0U5XcxFxq1WwlLMg" />
+            android:value="AIzaSyDYP5I4_ydO84dt_7Pbyxiyz3u2dkEgfW0" />
 
         <service
             android:name=".service.FirebaseMessagingService"

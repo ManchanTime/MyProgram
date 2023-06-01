@@ -152,7 +152,7 @@ public class MyPageActivity extends BasicFunctions {
         userPostAdapter = new UserPostAdapter(this, postList);
         userPostAdapter.setHasStableIds(true);
 
-        replyAdapter = new ReplyAdapter(this, replyList);
+        replyAdapter = new ReplyAdapter(this, replyList, null);
         replyAdapter.setHasStableIds(true);
 
         likePostAdapter = new UserPostAdapter(this, likeList);
@@ -256,7 +256,8 @@ public class MyPageActivity extends BasicFunctions {
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>)document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
-                                                Long.valueOf(String.valueOf(document.getData().get("reply_count")))
+                                                Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean)document.getData().get("read")
                                         )
                                 );
                             }

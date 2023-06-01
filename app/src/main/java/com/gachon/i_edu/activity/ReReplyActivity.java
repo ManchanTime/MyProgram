@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,17 +33,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gachon.i_edu.R;
-import com.gachon.i_edu.adpater.PostListAdapter;
-import com.gachon.i_edu.adpater.ReReplyAdapter;
 import com.gachon.i_edu.adpater.ReplyAdapter;
 import com.gachon.i_edu.dialog.ProgressDialog;
-import com.gachon.i_edu.info.PostInfo;
 import com.gachon.i_edu.info.ReplyInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -80,33 +75,27 @@ public class ReReplyActivity extends AppCompatActivity {
     private ImageView profileImage;
     private TextView profileName;
     private TextView profileTier;
-    private TextView profileTime;
-    private TextView profileTextContent;
-    private ImageView profileImageContent;
     private String imageUrl, imageProfile;
     private ImageView profileLike;
     private TextView profileLikeCount;
     private ArrayList<String> profileListList;
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private RelativeLayout layoutDelete, layoutChoose, layoutImage;
     private Long reply_count;
     private static final int REQUEST_CAMERA = 0, REQUEST_GALLERY = 1;
 
     //대댓 정보
     private CollectionReference collectionReference;
-    private RecyclerView recyclerView;
     private String name;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ArrayList<ReplyInfo> replyList = new ArrayList<>();
-    private ReReplyAdapter reReplyAdapter;
+    private final ArrayList<ReplyInfo> replyList = new ArrayList<>();
+    private ReplyAdapter reReplyAdapter;
     private ProgressDialog customProgressDialog;
-    private boolean updating;
-    private String replyId;
 
     //대댓 작성
     private EditText editReReply;
     private ImageView imageComplete;
-    private ImageView imageImage, imageEnrollment;
+    private ImageView imageEnrollment;
     private String text_contents;
     private Uri write_uri;
     private int image_count;
@@ -148,7 +137,6 @@ public class ReReplyActivity extends AppCompatActivity {
         Intent getIntent = getIntent();
         if(getIntent != null){
             getInfo = (ReplyInfo) getIntent.getSerializableExtra("object");
-            replyId = getInfo.getId();
             originalReplySetting(getInfo);
         }
 
@@ -157,14 +145,13 @@ public class ReReplyActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.e("check","heck");
                 refresh_top();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
         //대댓가져오기
-        recyclerView = findViewById(R.id.recycler_re_reply);
-        reReplyAdapter = new ReReplyAdapter(ReReplyActivity.this, replyList);
+        RecyclerView recyclerView = findViewById(R.id.recycler_re_reply);
+        reReplyAdapter = new ReplyAdapter(ReReplyActivity.this, replyList, getInfo.getPublisher());
         reReplyAdapter.setHasStableIds(true);
         //recyclerView.setItemViewCacheSize(100);
         recyclerView.setHasFixedSize(true);
@@ -175,7 +162,7 @@ public class ReReplyActivity extends AppCompatActivity {
 
         //대댓 작성
         //입력창
-        imageImage = findViewById(R.id.btn_image);
+        ImageView imageImage = findViewById(R.id.btn_image);
         imageImage.setOnClickListener(onClickListener);
         imageComplete = findViewById(R.id.btn_complete);
         imageComplete.setOnClickListener(onClickListener);
@@ -219,10 +206,10 @@ public class ReReplyActivity extends AppCompatActivity {
 
         profileName = findViewById(R.id.text_name);
         profileTier = findViewById(R.id.text_tier);
-        profileTime = findViewById(R.id.text_time);
-        profileTextContent = findViewById(R.id.text_content);
+        TextView profileTime = findViewById(R.id.text_time);
+        TextView profileTextContent = findViewById(R.id.text_content);
 
-        profileImageContent = findViewById(R.id.image_picture);
+        ImageView profileImageContent = findViewById(R.id.image_picture);
         profileImageContent.setOnClickListener(onClickListener);
 
         profileLike = findViewById(R.id.image_like);
@@ -403,7 +390,6 @@ public class ReReplyActivity extends AppCompatActivity {
 
     private void set_up(){
         //문서 가져오기
-        updating = true;
         Date date = replyList.size() == 0 ? new Date() : replyList.get(replyList.size()-1).getCreatedAt();
         collectionReference = firebaseFirestore.collection("replies");
         collectionReference.whereLessThan("createdAt", date)
@@ -425,14 +411,14 @@ public class ReReplyActivity extends AppCompatActivity {
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>) document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
-                                                Long.valueOf(String.valueOf(document.getData().get("reply_count")))
+                                                Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("read")
                                         )
                                 );
                             }
                             //리사이클러 뷰 초기화
                             reReplyAdapter.notifyDataSetChanged();
                         }
-                        updating = false;
                     }
                 });
     }
@@ -458,7 +444,8 @@ public class ReReplyActivity extends AppCompatActivity {
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>) document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
-                                                Long.valueOf(String.valueOf(document.getData().get("reply_count")))
+                                                Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("read")
                                         )
                                 );
                             }
@@ -561,7 +548,7 @@ public class ReReplyActivity extends AppCompatActivity {
                     final DocumentReference documentReference = firebaseFirestore.collection("replies").document();
                     if (write_uri == null) {
                         reReplyInfo = new ReplyInfo(documentReference.getId(), name, postId, publisher,
-                                reply_contents, new Date(), reReplyLikeList, 0L,0L);
+                                reply_contents, new Date(), reReplyLikeList, 0L,0L, false);
                         storeUpload(documentReference, reReplyInfo);
                     }
                     else {
@@ -584,7 +571,7 @@ public class ReReplyActivity extends AppCompatActivity {
                                             reReplyInfo =
                                                     new ReplyInfo(documentReference.getId(), name, postId,
                                                             publisher, reply_contents, new Date(),
-                                                            reReplyLikeList,0L, 0L);
+                                                            reReplyLikeList,0L, 0L, false);
                                             storeUpload(documentReference, reReplyInfo);
                                         }
                                     });

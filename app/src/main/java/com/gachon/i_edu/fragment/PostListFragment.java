@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,18 +15,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gachon.i_edu.R;
+import com.gachon.i_edu.activity.ChattingActivity;
 import com.gachon.i_edu.activity.MyPageActivity;
 import com.gachon.i_edu.activity.SearchActivity;
 import com.gachon.i_edu.activity.UserPageActivity;
 import com.gachon.i_edu.activity.WritePostActivity;
+import com.gachon.i_edu.adpater.MessageAdapter;
+import com.gachon.i_edu.info.ChatInfo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
+import java.util.Map;
 
 public class PostListFragment extends Fragment {
 
@@ -36,9 +52,10 @@ public class PostListFragment extends Fragment {
     private static final int fragment_communication = 0;
     private static final int fragment_question = 1;
     private FloatingActionButton addPost;
-    private ImageView image_search, image_my_page;
+    private ImageView image_search, image_my_page, imageNotification;
     private RelativeLayout layoutChooseTitle;
-    private TextView text_c, text_q;
+    private LinearLayout text_c, text_q;
+    private TextView textCount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,6 +64,8 @@ public class PostListFragment extends Fragment {
         LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
         view = localInflater.inflate(R.layout.fragment_post_list, container, false);
 
+        imageNotification = view.findViewById(R.id.btn_notification);
+        imageNotification.setOnClickListener(onClickListener);
         image_search = view.findViewById(R.id.btn_search);
         image_my_page = view.findViewById(R.id.btn_my_page);
         image_search.setOnClickListener(onClickListener);
@@ -59,6 +78,7 @@ public class PostListFragment extends Fragment {
         text_q = view.findViewById(R.id.btn_question);
         text_c.setOnClickListener(onClickListener);
         text_q.setOnClickListener(onClickListener);
+        textCount = view.findViewById(R.id.text_count);
 
         tabTitle = view.findViewById(R.id.tabs_title);
         tabTitle.addTab(tabTitle.newTab().setText("소통하기"));
@@ -122,8 +142,37 @@ public class PostListFragment extends Fragment {
                 field = "질문";
                 myStartActivity(WritePostActivity.class, field);
                 break;
+            case R.id.btn_notification:
+                break;
         }
     };
+
+    private void getList() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        CollectionReference collectionReference;
+
+        collectionReference = firestore.collection("posts");
+        //채팅방이름으로 된 컬렉션에 저장되어 있는 데이터들 읽어오기
+        //chatRef의 데이터가 변경될때마다 반응하는 리스너 달기 : get()은 일회용
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() { //데이터가 바뀔떄마다 찍음
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                //데이터가 바뀔때마다 그냥 add하면 그 순간의 모든것을 찍어 가져오기 때문에 중복되어버림
+                //따라서 변경된 Document만 찾아달라고 해야함
+                //1. 바뀐 애들 찾온다 - 왜 리스트인가? 처음 시작할 때 문제가 됨 그래서 여러개라고 생각함
+                List<DocumentChange> documentChanges = value.getDocumentChanges();
+                for (DocumentChange documentChange : documentChanges) {
+                    //2.변경된 문서내역의 데이터를 촬영한 DocumentSnapshot얻어오기
+                    DocumentSnapshot snapshot = documentChange.getDocument();
+                    //3.Document에 있는 필드값 가져오기
+                    Map<String, Object> notification = snapshot.getData();
+                    if (notification != null) {
+
+                    }
+                }
+            }
+        });
+    }
 
     public void myStartActivity(Class c, String field){
         Intent intent = new Intent(getActivity(), c);

@@ -45,8 +45,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyListVie
     private final Activity activity;
     private DocumentReference documentReference;
     private FirebaseFirestore firebaseFirestore;
-    private FirebaseUser user;
-
+    private final FirebaseUser user;
+    private String postPublisher;
 
     //전달 데이터
     private String tier;
@@ -61,10 +61,12 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyListVie
         }
     }
 
-    public ReplyAdapter(Activity activity, ArrayList<ReplyInfo> myDataset){
+    public ReplyAdapter(Activity activity, ArrayList<ReplyInfo> myDataset, String postPublisher){
         mDataset = myDataset;
         this.activity = activity;
         user = FirebaseAuth.getInstance().getCurrentUser();
+        this.postPublisher = postPublisher;
+        firebaseFirestore = FirebaseFirestore.getInstance();
         setHasStableIds(true);
     }
 
@@ -77,7 +79,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyListVie
             Intent intent = new Intent(activity, ReReplyActivity.class);
             intent.putExtra("object",mDataset.get(replyListViewHolder.getAdapterPosition()));
             if(mDataset.get(replyListViewHolder.getAdapterPosition()) == null){
-                Toast.makeText(activity, "존재하지 않는 포스트입니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "존재하지 않는 댓글입니다.", Toast.LENGTH_SHORT).show();
             }
             else
                 activity.startActivity(intent);
@@ -88,7 +90,14 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyListVie
     @Override
     public void onBindViewHolder(@NonNull final ReplyListViewHolder holder, @SuppressLint("RecyclerView") int position){
         CardView cardView = holder.cardView;
-
+        //읽음 확인
+        if(postPublisher != null){
+            if(postPublisher.equals(user.getUid()) && !mDataset.get(position).getRead()){
+                DocumentReference documentReference = firebaseFirestore.collection("replies")
+                        .document(mDataset.get(position).getId());
+                documentReference.update("read", true);
+            }
+        }
         //이름
         TextView textName = cardView.findViewById(R.id.text_name);
         textName.setText(mDataset.get(position).getName());

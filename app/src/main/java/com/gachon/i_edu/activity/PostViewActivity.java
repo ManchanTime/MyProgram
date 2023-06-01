@@ -1,6 +1,7 @@
 package com.gachon.i_edu.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,6 +39,7 @@ import com.gachon.i_edu.PhOffsetItemDecoration;
 import com.gachon.i_edu.R;
 import com.gachon.i_edu.adpater.ReplyAdapter;
 import com.gachon.i_edu.dialog.ProgressDialog;
+import com.gachon.i_edu.info.ChatInfo;
 import com.gachon.i_edu.info.PostInfo;
 import com.gachon.i_edu.info.ReplyInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,9 +52,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -65,6 +70,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class PostViewActivity extends BasicFunctions {
 
@@ -248,7 +255,7 @@ public class PostViewActivity extends BasicFunctions {
 
             PhOffsetItemDecoration itemDecoration = new PhOffsetItemDecoration(0);
             replyRecyclerview.addItemDecoration(itemDecoration);
-            replyAdapter = new ReplyAdapter(this, replyList);
+            replyAdapter = new ReplyAdapter(this, replyList, postInfo.getPublisher());
             replyAdapter.setHasStableIds(true);
             //recyclerView.setItemViewCacheSize(100);
             replyRecyclerview.setHasFixedSize(true);
@@ -365,7 +372,8 @@ public class PostViewActivity extends BasicFunctions {
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>)document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
-                                                Long.valueOf(String.valueOf(document.getData().get("reply_count")))
+                                                Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("read")
                                         )
                                 );
                             }
@@ -397,7 +405,8 @@ public class PostViewActivity extends BasicFunctions {
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>) document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
-                                                Long.valueOf(String.valueOf(document.getData().get("reply_count")))
+                                                Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("read")
                                         )
                                 );
                             }
@@ -568,6 +577,36 @@ public class PostViewActivity extends BasicFunctions {
         }
     };
 
+    public void setNotification(){
+        CollectionReference chatRef = firebaseFirestore.collection("replies");
+        //채팅방이름으로 된 컬렉션에 저장되어 있는 데이터들 읽어오기
+        //chatRef의 데이터가 변경될때마다 반응하는 리스너 달기 : get()은 일회용
+        chatRef.addSnapshotListener(new EventListener<QuerySnapshot>() { //데이터가 바뀔떄마다 찍음
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                //데이터가 바뀔때마다 그냥 add하면 그 순간의 모든것을 찍어 가져오기 때문에 중복되어버림
+                //따라서 변경된 Document만 찾아달라고 해야함
+                //1. 바뀐 애들 찾온다 - 왜 리스트인가? 처음 시작할 때 문제가 됨 그래서 여러개라고 생각함
+                List<DocumentChange> documentChanges = value.getDocumentChanges();
+                for (DocumentChange documentChange : documentChanges) {
+                    //2.변경된 문서내역의 데이터를 촬영한 DocumentSnapshot얻어오기
+                    DocumentSnapshot snapshot = documentChange.getDocument();
+                    //3.Document에 있는 필드값 가져오기
+                    Map<String, Object> msg = snapshot.getData();
+                    if (msg != null) {
+                        String msgName = msg.get("msgName").toString();
+                        String uid = msg.get("userId").toString();
+                        String message = msg.get("message").toString();
+                        String profileUrl = msg.get("profileUrl").toString();
+                        String time = msg.get("time").toString();
+                        boolean read = (boolean) msg.get("read");
+                        //4.읽어온 메세지를 리스트에 추가
+                    }
+                }
+            }
+        });
+    }
+
     public void deletePost(){
         //문서 가져오기
         collectionReference = firebaseFirestore.collection("replies");
@@ -714,7 +753,7 @@ public class PostViewActivity extends BasicFunctions {
         final DocumentReference documentReference = firebaseFirestore.collection("replies").document();
         if (write_uri == null) {
             replyInfo = new ReplyInfo(documentReference.getId(), writeName, postId, publisher,
-                    reply_contents, new Date(), replyLikeList, 0L,0L);
+                    reply_contents, new Date(), replyLikeList, 0L,0L, false);
             storeUpload(documentReference, replyInfo);
         }
         else {
@@ -736,7 +775,7 @@ public class PostViewActivity extends BasicFunctions {
                                 reply_contents.add(uri.toString());
                                 replyInfo = new ReplyInfo(documentReference.getId(), name, postId,
                                                 publisher, reply_contents, new Date(),
-                                                replyLikeList,0L, 0L);
+                                                replyLikeList,0L, 0L, false);
                                 storeUpload(documentReference, replyInfo);
                             }
                         });

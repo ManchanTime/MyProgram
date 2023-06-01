@@ -15,9 +15,11 @@ public class ReplyInfo implements Serializable {
     private ArrayList<String> like_list;
     private Long like_count;
     private Long reply_count;
+    private boolean read;
 
     public ReplyInfo(String id, String name, String postId, String publisher,
-                    ArrayList<String> content, Date createdAt, ArrayList<String> like_list, Long like_count, Long reply_count){
+                    ArrayList<String> content, Date createdAt, ArrayList<String> like_list,
+                     Long like_count, Long reply_count, boolean read){
         this.id = id;
         this.name = name;
         this.postId = postId;
@@ -27,6 +29,7 @@ public class ReplyInfo implements Serializable {
         this.like_list = like_list;
         this.like_count = like_count;
         this.reply_count = reply_count;
+        this.read = read;
     }
 
     public String getId(){
@@ -90,5 +93,12 @@ public class ReplyInfo implements Serializable {
     }
     public void setReply_count(Long reply_count){
         this.reply_count = reply_count;
+    }
+
+    public boolean getRead(){
+        return read;
+    }
+    public void setRead(boolean read){
+        this.read = read;
     }
 }

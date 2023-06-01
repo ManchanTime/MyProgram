@@ -59,25 +59,34 @@
                 android:layout_marginBottom="20dp"
                 android:padding="20dp">
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/btn_communication"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:text="소통하기"
-                    android:textColor="@color/black"
-                    android:gravity="start"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text="소통하기"
+                        android:textColor="@color/black"
+                        android:gravity="start"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/communication"
-                    android:textSize="15sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/communication"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/btn_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
                 <TextView
-                    android:id="@+id/btn_question"
                     android:gravity="start"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -93,6 +102,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/question"
                     android:textSize="15sp"/>
+            </LinearLayout>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>

@@ -486,7 +486,9 @@ public class WritePostActivity extends BasicFunctions {
                 main_contentsList.add(main_text);
                 int main_image_count = main_images.getChildCount();
                 if (main_image_count == 0) {
-                    postInfo = new PostInfo(documentReference.getId(), publisher, field, subject, title, main_contentsList, sub_contentsList, new Date(), 0L, 0L);
+                    postInfo = new PostInfo(documentReference.getId(), publisher, field, subject,
+                            title, main_contentsList, sub_contentsList, new Date(),
+                            0L, 0L);
                     storeUpload(documentReference, postInfo);
                 }
                 for (int i = 0; i < main_images.getChildCount(); i++) {
@@ -513,7 +515,9 @@ public class WritePostActivity extends BasicFunctions {
                                         main_successCount++;
                                         if (size <= 2) {
                                             if (main_pathList.size() == main_successCount) {
-                                                postInfo = new PostInfo(documentReference.getId(), publisher, field, subject, title, main_contentsList, sub_contentsList, new Date(), 0L, 0L);
+                                                postInfo = new PostInfo(documentReference.getId(), publisher, field, subject,
+                                                        title, main_contentsList, sub_contentsList, new Date(),
+                                                        0L, 0L);
                                                 storeUpload(documentReference, postInfo);
                                             }
                                         }
@@ -559,7 +563,9 @@ public class WritePostActivity extends BasicFunctions {
                                                     sub_contentsList.set(index, uri.toString());
                                                     sub_successCount++;
                                                     if (main_pathList.size() == main_successCount && sub_pathList.size() == sub_successCount) {
-                                                        postInfo = new PostInfo(documentReference.getId(), publisher, field, subject,  title, main_contentsList, sub_contentsList, new Date(), 0L, 0L);
+                                                        postInfo = new PostInfo(documentReference.getId(), publisher, field, subject,
+                                                                title, main_contentsList, sub_contentsList, new Date(),
+                                                                0L, 0L);
                                                         storeUpload(documentReference, postInfo);
                                                     }
                                                 }

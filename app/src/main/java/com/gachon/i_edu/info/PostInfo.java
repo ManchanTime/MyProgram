@@ -29,7 +29,6 @@ public class PostInfo implements Serializable {
         this.createdAt = createdAt;
         this.like_count = like_count;
         this.reply_count = reply_count;
-
     }
 
     public String getId(){
