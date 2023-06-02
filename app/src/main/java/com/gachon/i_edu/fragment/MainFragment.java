@@ -211,10 +211,25 @@ public class MainFragment extends Fragment implements
             }
         });
 
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         viewPager = rootView.findViewById(R.id.viewPager2);
-        pagerAdapter = new TextViewPagerAdapter(rootView.getContext());
-        viewPager.setAdapter(pagerAdapter);
+
+        CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("banners");
+        collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    ArrayList<String> bannerList = new ArrayList<>();
+                    for(QueryDocumentSnapshot document : task.getResult()){
+                        bannerList.add(document.getData().get("url").toString());
+                    }
+                    pagerAdapter = new TextViewPagerAdapter(rootView.getContext(), bannerList);
+                    viewPager.setAdapter(pagerAdapter);
+                }
+            }
+        });
+
 
         RecyclerView recycler_hot = rootView.findViewById(R.id.recycler_hot);
         hotAdapter = new HotAdapter(getActivity(), postList);
@@ -264,6 +279,7 @@ public class MainFragment extends Fragment implements
             }
         };
 
+        //배너 자동 넘기기
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

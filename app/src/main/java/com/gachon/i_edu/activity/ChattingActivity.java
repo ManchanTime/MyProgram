@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.service.autofill.CharSequenceTransformation;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -85,7 +87,7 @@ public class ChattingActivity extends BasicFunctions {
     MessageAdapter messageAdapter;
     private RecyclerView recyclerView;
     private TextView textName;
-    private ImageView btnComplete, imageEnrollment;
+    private ImageView btnComplete, imageEnrollment, btnTop, btnBottom;
     private EditText editMessage;
     private String photoUrl;
     private String chatName;
@@ -95,6 +97,7 @@ public class ChattingActivity extends BasicFunctions {
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_CAMERA = 1;
     private static MemberInfo getMember;
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,10 +128,21 @@ public class ChattingActivity extends BasicFunctions {
         btnSearch.setOnClickListener(onClickListener);
         btnCancel = findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(onClickListener);
-        btnSearch.setOnClickListener(onClickListener);
         btnLow = findViewById(R.id.btn_low);
         btnLow.setOnClickListener(onClickListener);
+        btnTop = findViewById(R.id.btn_search_top);
+        btnTop.setOnClickListener(onClickListener);
+        btnBottom = findViewById(R.id.btn_search_low);
+        btnBottom.setOnClickListener(onClickListener);
         editSearch = findViewById(R.id.edit_search);
+        editSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable) {index = 0;}
+        });
         editSearch.setText("");
         editSearch.setImeOptions(EditorInfo.IME_ACTION_DONE); //키보드 다음 버튼을 완료 버튼으로 바꿔줌
         editSearch.setOnEditorActionListener(new TextView.OnEditorActionListener()
@@ -144,11 +158,18 @@ public class ChattingActivity extends BasicFunctions {
                     customProgressDialog.setCanceledOnTouchOutside(false);
                     //뒤로가기 방지
                     customProgressDialog.setCancelable(false);
-                    if (storeMessage.contains(search_data)) {
-                        int index = storeMessage.indexOf(search_data);
-                        Log.e("index",storeMessage.get(index) + " " + index);
-                        recyclerView.scrollToPosition(index);
+                    btnTop.setVisibility(View.VISIBLE);
+                    btnBottom.setVisibility(View.VISIBLE);
+                    for(int i=storeMessage.size()-1;i>=0;i--){
+                        if(storeMessage.get(i).contains(search_data)){
+                            index = i;
+                            recyclerView.scrollToPosition(index);
+                            index--;
+                            break;
+                        }
                     }
+                    if(index == 0)
+                        Toast.makeText(ChattingActivity.this, "검색어가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
                     customProgressDialog.cancel();
                     return true;
                 }else{
@@ -195,8 +216,10 @@ public class ChattingActivity extends BasicFunctions {
                 RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-
-                if (totalItemCount - 2 <= lastVisibleItemPosition) {
+                //스크롤이 위에있으면 아래버튼 on 아니면 off
+                if (totalItemCount - 2 <= lastVisibleItemPosition || layoutSearch.getVisibility() == View.VISIBLE) {
+                    btnLow.setVisibility(View.GONE);
+                }else {
                     btnLow.setVisibility(View.VISIBLE);
                 }
             }
@@ -324,11 +347,35 @@ public class ChattingActivity extends BasicFunctions {
                 break;
             case R.id.btn_cancel:
                 btnComplete.setVisibility(View.VISIBLE);
+                btnTop.setVisibility(View.GONE);
+                btnBottom.setVisibility(View.GONE);
+                btnLow.setVisibility(View.VISIBLE);
                 editSearch.setText("");
                 layoutSearch.setVisibility(View.GONE);
+                index = 0;
                 break;
             case R.id.btn_low:
                 recyclerView.scrollToPosition(messageItems.size()-1);
+                break;
+            case R.id.btn_search_top:
+                for(int i=index;i>=0;i--){
+                    if(storeMessage.get(i).contains(editSearch.getText().toString())){
+                        index = i;
+                        recyclerView.scrollToPosition(index);
+                        index--;
+                        break;
+                    }
+                }
+                break;
+            case R.id.btn_search_low:
+                for(int i=index+2;i<storeMessage.size();i++){
+                    if(storeMessage.get(i).contains(editSearch.getText().toString())){
+                        index = i;
+                        recyclerView.scrollToPosition(index);
+                        index++;
+                        break;
+                    }
+                }
                 break;
         }
     };

@@ -63,6 +63,26 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="60dp"
         android:src="@drawable/low"/>
+    <ImageView
+        android:id="@+id/btn_search_top"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="90dp"
+        android:src="@drawable/top"/>
+    <ImageView
+        android:id="@+id/btn_search_low"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="60dp"
+        android:src="@drawable/bottom"/>
 
     <RelativeLayout
         android:id="@+id/layout_set_image"

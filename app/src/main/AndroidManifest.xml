@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.gachon.i_edu">
+    package="com.gachon.i_edu" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -26,7 +26,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Firebase"
-        tools:targetApi="33">
+        tools:targetApi="33" >
+        <activity
+            android:name=".activity.NotificationListActivity"
+            android:exported="false"
+            android:label="@string/title_activity_notification_list"
+            android:theme="@style/Theme.Firebase.NoActionBar" />
         <activity
             android:name=".activity.SearchUserActivity"
             android:exported="false" />
@@ -41,7 +46,7 @@
         <service
             android:name=".service.FirebaseMessagingService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -62,7 +67,7 @@
         <activity
             android:name=".activity.LoadingActivity"
             android:exported="true"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -121,7 +126,7 @@
             android:theme="@style/AppTheme1" />
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -138,7 +143,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.gachon.i_edu.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />

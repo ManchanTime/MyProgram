@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,14 @@ import android.widget.TextView;
 import com.gachon.i_edu.R;
 import com.gachon.i_edu.activity.ChattingActivity;
 import com.gachon.i_edu.activity.MyPageActivity;
+import com.gachon.i_edu.activity.NotificationListActivity;
 import com.gachon.i_edu.activity.SearchActivity;
 import com.gachon.i_edu.activity.UserPageActivity;
 import com.gachon.i_edu.activity.WritePostActivity;
 import com.gachon.i_edu.adpater.MessageAdapter;
 import com.gachon.i_edu.info.ChatInfo;
+import com.gachon.i_edu.info.NotificationInfo;
+import com.gachon.i_edu.info.ReplyInfo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +44,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +64,7 @@ public class PostListFragment extends Fragment {
     private RelativeLayout layoutChooseTitle;
     private LinearLayout text_c, text_q;
     private TextView textCount;
+    private final ArrayList<NotificationInfo> notificationData = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +73,7 @@ public class PostListFragment extends Fragment {
         LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
         view = localInflater.inflate(R.layout.fragment_post_list, container, false);
 
+        setNotification();
         imageNotification = view.findViewById(R.id.btn_notification);
         imageNotification.setOnClickListener(onClickListener);
         image_search = view.findViewById(R.id.btn_search);
@@ -113,6 +123,7 @@ public class PostListFragment extends Fragment {
     }
 
     View.OnClickListener onClickListener = (v) -> {
+        Intent intent;
         switch(v.getId()){
             case R.id.layout_choose_title:
                 if(layoutChooseTitle.getVisibility() == View.VISIBLE)
@@ -122,7 +133,7 @@ public class PostListFragment extends Fragment {
                 layoutChooseTitle.setVisibility(View.VISIBLE);
                 break;
             case R.id.btn_search:
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                intent = new Intent(getActivity(), SearchActivity.class);
                 getActivity().startActivity(intent);
                 break;
             case R.id.btn_my_page:
@@ -143,33 +154,53 @@ public class PostListFragment extends Fragment {
                 myStartActivity(WritePostActivity.class, field);
                 break;
             case R.id.btn_notification:
+                intent = new Intent(getActivity(), NotificationListActivity.class);
+                intent.putExtra("object", notificationData);
+                getActivity().startActivity(intent);
                 break;
         }
     };
 
-    private void getList() {
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        CollectionReference collectionReference;
-
-        collectionReference = firestore.collection("posts");
+    public void setNotification(){
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        CollectionReference chatRef = firebaseFirestore.collection("replies");
         //채팅방이름으로 된 컬렉션에 저장되어 있는 데이터들 읽어오기
         //chatRef의 데이터가 변경될때마다 반응하는 리스너 달기 : get()은 일회용
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() { //데이터가 바뀔떄마다 찍음
+        chatRef.addSnapshotListener(new EventListener<QuerySnapshot>() { //데이터가 바뀔떄마다 찍음
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 //데이터가 바뀔때마다 그냥 add하면 그 순간의 모든것을 찍어 가져오기 때문에 중복되어버림
                 //따라서 변경된 Document만 찾아달라고 해야함
                 //1. 바뀐 애들 찾온다 - 왜 리스트인가? 처음 시작할 때 문제가 됨 그래서 여러개라고 생각함
                 List<DocumentChange> documentChanges = value.getDocumentChanges();
+                int count = 0;
+                notificationData.clear();
                 for (DocumentChange documentChange : documentChanges) {
                     //2.변경된 문서내역의 데이터를 촬영한 DocumentSnapshot얻어오기
                     DocumentSnapshot snapshot = documentChange.getDocument();
                     //3.Document에 있는 필드값 가져오기
-                    Map<String, Object> notification = snapshot.getData();
-                    if (notification != null) {
-
+                    Map<String, Object> replies = snapshot.getData();
+                    if (replies != null) {
+                        boolean read = (boolean) replies.get("read");
+                        if (!read) {
+                            String postPublisher = replies.get("postPublisher").toString();
+                            String publisher = replies.get("publisher").toString();
+                            String postId = replies.get("postId").toString();
+                            String id = replies.get("id").toString();
+                            boolean flag = (boolean) replies.get("flag");
+                            Date time = new Date(snapshot.getDate("createdAt").getTime());
+                            if (postPublisher.equals(user.getUid())) {
+                                count++;
+                                notificationData.add(new NotificationInfo(postPublisher, publisher, postId, id, flag, time));
+                            }
+                        }
                     }
                 }
+                if(count != 0){
+                    textCount.setText(count+"");
+                    textCount.setVisibility(View.VISIBLE);
+                }else textCount.setVisibility(View.GONE);
             }
         });
     }

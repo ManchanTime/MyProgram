@@ -7,7 +7,7 @@
     android:background="@color/white"
     tools:context=".fragment.PersonalChatFragment">
 
-    <include layout="@layout/tool_bar_post_list"
+    <include layout="@layout/tool_bar_post_chat"
         android:id="@+id/toolbar"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.gachon.i_edu.R;
+import com.gachon.i_edu.adpater.ReReplyAdapter;
 import com.gachon.i_edu.adpater.ReplyAdapter;
 import com.gachon.i_edu.dialog.ProgressDialog;
 import com.gachon.i_edu.info.ReplyInfo;
@@ -89,7 +90,7 @@ public class ReReplyActivity extends AppCompatActivity {
     private String name;
     private SwipeRefreshLayout swipeRefreshLayout;
     private final ArrayList<ReplyInfo> replyList = new ArrayList<>();
-    private ReplyAdapter reReplyAdapter;
+    private ReReplyAdapter reReplyAdapter;
     private ProgressDialog customProgressDialog;
 
     //대댓 작성
@@ -151,7 +152,7 @@ public class ReReplyActivity extends AppCompatActivity {
         });
         //대댓가져오기
         RecyclerView recyclerView = findViewById(R.id.recycler_re_reply);
-        reReplyAdapter = new ReplyAdapter(ReReplyActivity.this, replyList, getInfo.getPublisher());
+        reReplyAdapter = new ReReplyAdapter(ReReplyActivity.this, replyList, getInfo.getPublisher());
         reReplyAdapter.setHasStableIds(true);
         //recyclerView.setItemViewCacheSize(100);
         recyclerView.setHasFixedSize(true);
@@ -404,14 +405,15 @@ public class ReReplyActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 replyList.add(new ReplyInfo(
                                                 document.getData().get("id").toString(),
-                                                document.getData().get("name").toString(),
                                                 document.getData().get("postId").toString(),
+                                                document.getData().get("postPublisher").toString(),
                                                 document.getData().get("publisher").toString(),
                                                 (ArrayList<String>) document.getData().get("content"),
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>) document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
                                                 Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("flag"),
                                                 (boolean) document.getData().get("read")
                                         )
                                 );
@@ -437,14 +439,15 @@ public class ReReplyActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 replyList.add(new ReplyInfo(
                                                 document.getData().get("id").toString(),
-                                                document.getData().get("name").toString(),
                                                 document.getData().get("postId").toString(),
+                                                document.getData().get("postPublisher").toString(),
                                                 document.getData().get("publisher").toString(),
                                                 (ArrayList<String>) document.getData().get("content"),
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>) document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
                                                 Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("flag"),
                                                 (boolean) document.getData().get("read")
                                         )
                                 );
@@ -515,6 +518,7 @@ public class ReReplyActivity extends AppCompatActivity {
         //댓글 컨텐츠
         reply_contents = new ArrayList<>();
         String postId = getInfo.getId();
+        String postPublisher = getInfo.getPublisher();
         String publisher = user.getUid();
         reply_contents.add(text_contents);
         ArrayList<String> reReplyLikeList = new ArrayList<>();
@@ -547,8 +551,8 @@ public class ReReplyActivity extends AppCompatActivity {
                     StorageReference storageReference = storage.getReference();
                     final DocumentReference documentReference = firebaseFirestore.collection("replies").document();
                     if (write_uri == null) {
-                        reReplyInfo = new ReplyInfo(documentReference.getId(), name, postId, publisher,
-                                reply_contents, new Date(), reReplyLikeList, 0L,0L, false);
+                        reReplyInfo = new ReplyInfo(documentReference.getId(), postId, postPublisher, publisher,
+                                reply_contents, new Date(), reReplyLikeList, 0L,0L, false,false);
                         storeUpload(documentReference, reReplyInfo);
                     }
                     else {
@@ -569,9 +573,9 @@ public class ReReplyActivity extends AppCompatActivity {
                                         public void onSuccess(Uri uri) {
                                             reply_contents.add(uri.toString());
                                             reReplyInfo =
-                                                    new ReplyInfo(documentReference.getId(), name, postId,
+                                                    new ReplyInfo(documentReference.getId(), postId, postPublisher,
                                                             publisher, reply_contents, new Date(),
-                                                            reReplyLikeList,0L, 0L, false);
+                                                            reReplyLikeList,0L, 0L,false, false);
                                             storeUpload(documentReference, reReplyInfo);
                                         }
                                     });

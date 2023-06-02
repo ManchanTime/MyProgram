@@ -7,4 +7,13 @@
     <string name="communication">다양한 사람들과 소통해요!!</string>
     <string name="question">문제를 함께 풀고 해결해요!!</string>
     <string name="announce_level">커뮤니티 문제풀이 탭의 질문글에서 올린 질문의 개수와 올린 응답 수에 따라 티어가 올라요. 친구들의 질문에 답변하고 질문하며 티어를 올려보세요!!</string>
+    <string name="title_activity_notification_list">NotificationListActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

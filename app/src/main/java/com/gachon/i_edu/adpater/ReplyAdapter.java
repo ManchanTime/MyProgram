@@ -98,10 +98,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyListVie
                 documentReference.update("read", true);
             }
         }
-        //이름
-        TextView textName = cardView.findViewById(R.id.text_name);
-        textName.setText(mDataset.get(position).getName());
-
         //유저 정보
         ImageView imageProfile = cardView.findViewById(R.id.image_profile);
         TextView textTier = cardView.findViewById(R.id.text_tier);
@@ -112,6 +108,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyListVie
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
+                    TextView textName = cardView.findViewById(R.id.text_name);
+                    textName.setText(task.getResult().getData().get("name").toString());
                     if(documentSnapshot.getData().get("photoUri") != null) {
                         uri = documentSnapshot.getData().get("photoUri").toString();
                         Glide.with(activity).load(uri).into(imageProfile);

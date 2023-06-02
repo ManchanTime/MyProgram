@@ -132,6 +132,18 @@ public class PostViewActivity extends BasicFunctions {
     }
 
     @Override
+    protected void onStart(){
+        super.onStart();
+        DocumentReference documentReference = firebaseFirestore.collection("users").document(user.getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                like_list = (ArrayList<String>) task.getResult().getData().get("like_post");
+            }
+        });
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_view);
@@ -139,7 +151,6 @@ public class PostViewActivity extends BasicFunctions {
         customProgressDialog = new ProgressDialog(this);
         customProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         customProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -155,7 +166,7 @@ public class PostViewActivity extends BasicFunctions {
             sub_contents = postInfo.getSub_content();
             title = postInfo.getTitle();
             uid = postInfo.getPublisher();
-            like_list = (ArrayList<String>) intent.getSerializableExtra("like_list");
+            //like_list = (ArrayList<String>) intent.getSerializableExtra("like_list");
             String publisher = postInfo.getPublisher();
             btn_delete_post = findViewById(R.id.btn_delete_post);
             btn_cancel = findViewById(R.id.btn_cancel);
@@ -365,14 +376,15 @@ public class PostViewActivity extends BasicFunctions {
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 replyList.add(new ReplyInfo(
                                                 document.getData().get("id").toString(),
-                                                document.getData().get("name").toString(),
                                                 document.getData().get("postId").toString(),
+                                                document.getData().get("postPublisher").toString(),
                                                 document.getData().get("publisher").toString(),
                                                 (ArrayList<String>)document.getData().get("content"),
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>)document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
                                                 Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean)document.getData().get("flag"),
                                                 (boolean) document.getData().get("read")
                                         )
                                 );
@@ -398,14 +410,15 @@ public class PostViewActivity extends BasicFunctions {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 replyList.add(new ReplyInfo(
                                                 document.getData().get("id").toString(),
-                                                document.getData().get("name").toString(),
                                                 document.getData().get("postId").toString(),
+                                                document.getData().get("postPublisher").toString(),
                                                 document.getData().get("publisher").toString(),
                                                 (ArrayList<String>) document.getData().get("content"),
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>) document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
                                                 Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean)document.getData().get("flag"),
                                                 (boolean) document.getData().get("read")
                                         )
                                 );
@@ -577,36 +590,6 @@ public class PostViewActivity extends BasicFunctions {
         }
     };
 
-    public void setNotification(){
-        CollectionReference chatRef = firebaseFirestore.collection("replies");
-        //채팅방이름으로 된 컬렉션에 저장되어 있는 데이터들 읽어오기
-        //chatRef의 데이터가 변경될때마다 반응하는 리스너 달기 : get()은 일회용
-        chatRef.addSnapshotListener(new EventListener<QuerySnapshot>() { //데이터가 바뀔떄마다 찍음
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                //데이터가 바뀔때마다 그냥 add하면 그 순간의 모든것을 찍어 가져오기 때문에 중복되어버림
-                //따라서 변경된 Document만 찾아달라고 해야함
-                //1. 바뀐 애들 찾온다 - 왜 리스트인가? 처음 시작할 때 문제가 됨 그래서 여러개라고 생각함
-                List<DocumentChange> documentChanges = value.getDocumentChanges();
-                for (DocumentChange documentChange : documentChanges) {
-                    //2.변경된 문서내역의 데이터를 촬영한 DocumentSnapshot얻어오기
-                    DocumentSnapshot snapshot = documentChange.getDocument();
-                    //3.Document에 있는 필드값 가져오기
-                    Map<String, Object> msg = snapshot.getData();
-                    if (msg != null) {
-                        String msgName = msg.get("msgName").toString();
-                        String uid = msg.get("userId").toString();
-                        String message = msg.get("message").toString();
-                        String profileUrl = msg.get("profileUrl").toString();
-                        String time = msg.get("time").toString();
-                        boolean read = (boolean) msg.get("read");
-                        //4.읽어온 메세지를 리스트에 추가
-                    }
-                }
-            }
-        });
-    }
-
     public void deletePost(){
         //문서 가져오기
         collectionReference = firebaseFirestore.collection("replies");
@@ -736,6 +719,7 @@ public class PostViewActivity extends BasicFunctions {
         reply_contents = new ArrayList<>();
         String writeName = name;
         String postId = postInfo.getId();
+        String postPublisher = postInfo.getPublisher();
         String publisher = user.getUid();
         reply_contents.add(text_contents);
         ArrayList<String> replyLikeList = new ArrayList<>();
@@ -752,8 +736,8 @@ public class PostViewActivity extends BasicFunctions {
         StorageReference storageReference = storage.getReference();
         final DocumentReference documentReference = firebaseFirestore.collection("replies").document();
         if (write_uri == null) {
-            replyInfo = new ReplyInfo(documentReference.getId(), writeName, postId, publisher,
-                    reply_contents, new Date(), replyLikeList, 0L,0L, false);
+            replyInfo = new ReplyInfo(documentReference.getId(), postId, postPublisher, publisher,
+                    reply_contents, new Date(), replyLikeList, 0L,0L, true, false);
             storeUpload(documentReference, replyInfo);
         }
         else {
@@ -773,9 +757,9 @@ public class PostViewActivity extends BasicFunctions {
                             @Override
                             public void onSuccess(Uri uri) {
                                 reply_contents.add(uri.toString());
-                                replyInfo = new ReplyInfo(documentReference.getId(), name, postId,
+                                replyInfo = new ReplyInfo(documentReference.getId(), postId, postPublisher,
                                                 publisher, reply_contents, new Date(),
-                                                replyLikeList,0L, 0L, false);
+                                                replyLikeList,0L, 0L, true, false);
                                 storeUpload(documentReference, replyInfo);
                             }
                         });

@@ -318,14 +318,15 @@ public class UserPageActivity extends BasicFunctions {
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 replyList.add(new ReplyInfo(
                                                 document.getData().get("id").toString(),
-                                                document.getData().get("name").toString(),
                                                 document.getData().get("postId").toString(),
+                                                document.getData().get("postPublisher").toString(),
                                                 document.getData().get("publisher").toString(),
                                                 (ArrayList<String>)document.getData().get("content"),
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>)document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
                                                 Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("flag"),
                                                 (boolean) document.getData().get("read")
                                         )
                                 );
@@ -358,14 +359,15 @@ public class UserPageActivity extends BasicFunctions {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 replyList.add(new ReplyInfo(
                                                 document.getData().get("id").toString(),
-                                                document.getData().get("name").toString(),
                                                 document.getData().get("postId").toString(),
+                                                document.getData().get("postPublisher").toString(),
                                                 document.getData().get("publisher").toString(),
                                                 (ArrayList<String>) document.getData().get("content"),
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>) document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
                                                 Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean) document.getData().get("flag"),
                                                 (boolean) document.getData().get("read")
                                         )
                                 );

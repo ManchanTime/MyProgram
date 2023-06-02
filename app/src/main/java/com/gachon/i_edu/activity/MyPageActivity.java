@@ -50,6 +50,7 @@ public class MyPageActivity extends BasicFunctions {
     private RelativeLayout layout_announce;
     private boolean updating;
     private ProgressBar progressBar;
+    private ProgressDialog customProgressDialog;
 
     //공통
     private FirebaseFirestore firebaseFirestore;
@@ -84,6 +85,10 @@ public class MyPageActivity extends BasicFunctions {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_page);
 
+        //로딩창 객체 생성
+        customProgressDialog = new ProgressDialog(this);
+        customProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        customProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         textCheckLevel = findViewById(R.id.text_check_level);
         progressBar = findViewById(R.id.progressBar);
         text_set_title = findViewById(R.id.text_title);
@@ -249,14 +254,15 @@ public class MyPageActivity extends BasicFunctions {
                             for(QueryDocumentSnapshot document : task.getResult()){
                                 replyList.add(new ReplyInfo(
                                                 document.getData().get("id").toString(),
-                                                document.getData().get("name").toString(),
                                                 document.getData().get("postId").toString(),
+                                                document.getData().get("postPublisher").toString(),
                                                 document.getData().get("publisher").toString(),
                                                 (ArrayList<String>)document.getData().get("content"),
                                                 new Date(document.getDate("createdAt").getTime()),
                                                 (ArrayList<String>)document.getData().get("like_list"),
                                                 Long.valueOf(String.valueOf(document.getData().get("like_count"))),
                                                 Long.valueOf(String.valueOf(document.getData().get("reply_count"))),
+                                                (boolean)document.getData().get("flag"),
                                                 (boolean)document.getData().get("read")
                                         )
                                 );
@@ -276,6 +282,11 @@ public class MyPageActivity extends BasicFunctions {
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                customProgressDialog.show();
+                //화면터치 방지
+                customProgressDialog.setCanceledOnTouchOutside(false);
+                //뒤로가기 방지
+                customProgressDialog.setCancelable(false);
                 ArrayList<String> post_like = (ArrayList<String>) task.getResult().getData().get("like_post");
                 likeList.clear();
                 for(int i=0;i<post_like.size();i++){
@@ -305,6 +316,7 @@ public class MyPageActivity extends BasicFunctions {
                         }
                     });
                 }
+                customProgressDialog.cancel();
             }
         });
     }

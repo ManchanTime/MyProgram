@@ -494,7 +494,7 @@ public class WritePostActivity extends BasicFunctions {
                 for (int i = 0; i < main_images.getChildCount(); i++) {
                     main_contentsList.add(main_pathList.get(i).toString());
                     final StorageReference mountainImagesRef = storageReference
-                            .child("posts/" + documentReference.getId() + "/" + main_pathCount + "jpg");
+                            .child("posts/" + documentReference.getId() + "/" + main_pathCount + ".jpg");
                     try {
                         StorageMetadata metadata = new StorageMetadata.Builder()
                                 .setCustomMetadata("index", "" + (main_contentsList.size() - 1)).build();

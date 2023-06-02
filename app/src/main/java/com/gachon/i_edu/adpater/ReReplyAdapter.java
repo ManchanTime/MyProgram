@@ -47,6 +47,7 @@ public class ReReplyAdapter extends RecyclerView.Adapter<ReReplyAdapter.ReReplyL
     private DocumentReference documentReference;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseUser user;
+    private String postPublisher;
 
     //전달 데이터
     private String tier;
@@ -60,9 +61,10 @@ public class ReReplyAdapter extends RecyclerView.Adapter<ReReplyAdapter.ReReplyL
         }
     }
 
-    public ReReplyAdapter(Activity activity, ArrayList<ReplyInfo> myDataset){
+    public ReReplyAdapter(Activity activity, ArrayList<ReplyInfo> myDataset, String postPublisher){
         mDataset = myDataset;
         this.activity = activity;
+        this.postPublisher = postPublisher;
         user = FirebaseAuth.getInstance().getCurrentUser();
         setHasStableIds(true);
     }
@@ -77,11 +79,14 @@ public class ReReplyAdapter extends RecyclerView.Adapter<ReReplyAdapter.ReReplyL
     @Override
     public void onBindViewHolder(@NonNull final ReReplyListViewHolder holder, @SuppressLint("RecyclerView") int position){
         CardView cardView = holder.cardView;
-
-        //이름
-        TextView textName = cardView.findViewById(R.id.text_name);
-        textName.setText(mDataset.get(position).getName());
-
+        //읽음 확인
+        if(postPublisher != null){
+            if(postPublisher.equals(user.getUid()) && !mDataset.get(position).getRead()){
+                DocumentReference documentReference = firebaseFirestore.collection("replies")
+                        .document(mDataset.get(position).getId());
+                documentReference.update("read", true);
+            }
+        }
         //유저 정보
         ImageView imageProfile = cardView.findViewById(R.id.image_profile);
         TextView textTier = cardView.findViewById(R.id.text_tier);
@@ -92,6 +97,8 @@ public class ReReplyAdapter extends RecyclerView.Adapter<ReReplyAdapter.ReReplyL
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
+                    TextView textName = cardView.findViewById(R.id.text_name);
+                    textName.setText(documentSnapshot.getData().get("name").toString());
                     if(documentSnapshot.getData().get("photoUri") != null) {
                         uri = documentSnapshot.getData().get("photoUri").toString();
                         Glide.with(activity).load(uri).into(imageProfile);

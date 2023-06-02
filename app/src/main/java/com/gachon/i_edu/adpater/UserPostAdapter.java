@@ -61,15 +61,6 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         this.activity = activity;
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        documentReference = firebaseFirestore.collection("users").document(user.getUid());
-        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    likeList = (ArrayList<String>) task.getResult().getData().get("like_post");
-                }
-            }
-        });
     }
 
     @NonNull
@@ -108,16 +99,25 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             fieldView.setText(mDataset.get(position).getField() + " " + mDataset.get(position).getSubject());
 
         //좋아요 댓글수ㅣ
-        TextView countLike = cardView.findViewById(R.id.text_count_like);
-        TextView countReply = cardView.findViewById(R.id.text_info);
-        countReply.setText(mDataset.get(position).getReply_count() + "");
-        ImageView likeImage = cardView.findViewById(R.id.image_like);
-        setStringData(postId,likeImage);
-        countLike.setText(mDataset.get(position).getLike_count()+"");
-        likeImage.setOnClickListener(new View.OnClickListener() {
+        documentReference = firebaseFirestore.collection("users").document(user.getUid());
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View view) {
-                checkLike(setStringData(postId, likeImage), likeImage, countLike, position);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    likeList = (ArrayList<String>) task.getResult().getData().get("like_post");
+                    TextView countLike = cardView.findViewById(R.id.text_count_like);
+                    TextView countReply = cardView.findViewById(R.id.text_info);
+                    countReply.setText(mDataset.get(position).getReply_count() + "");
+                    ImageView likeImage = cardView.findViewById(R.id.image_like);
+                    setStringData(postId,likeImage);
+                    countLike.setText(mDataset.get(position).getLike_count()+"");
+                    likeImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            checkLike(setStringData(postId, likeImage), likeImage, countLike, position);
+                        }
+                    });
+                }
             }
         });
 

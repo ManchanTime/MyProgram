@@ -103,7 +103,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
                             <TextView
-                                android:id="@+id/text_announce"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
@@ -231,7 +230,6 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/text_how"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -274,7 +272,6 @@
                     android:background="@drawable/border_low">
 
                     <TextView
-                        android:id="@+id/text_how"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -295,7 +292,6 @@
                     android:padding="5dp"
                     android:background="@drawable/border_low">
                     <TextView
-                        android:id="@+id/text_how"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
@@ -316,7 +312,6 @@
                     android:padding="5dp"
                     android:background="@drawable/border_low">
                     <TextView
-                        android:id="@+id/text_how"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
