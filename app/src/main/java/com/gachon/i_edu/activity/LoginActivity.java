@@ -89,15 +89,12 @@ public class LoginActivity extends BasicFunctions {
             public void onClick(View view) {
                 customProgressDialog.show();
                 gsa = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
-
                 if (gsa != null) { // 로그인 돼있는 경우
-                    //로그인 성공
-                    Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
                     checkInit();
-                    customProgressDialog.cancel();
                 }
                 else
                     signIn();
+                customProgressDialog.cancel();
             }
         });
 

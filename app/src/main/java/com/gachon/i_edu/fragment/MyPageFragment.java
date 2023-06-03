@@ -99,9 +99,21 @@ public class MyPageFragment extends Fragment {
             case R.id.btn_logout:
                 //파이어베이스 로그아웃
                 mAuth.signOut();
-                Toast.makeText(getActivity(),"로그아웃",Toast.LENGTH_SHORT);
-                // 로그인 화면으로 이동
-                myStartActivity(LoginActivity.class);
+                Intent intent = mGoogleSignInClient.getSignInIntent();
+                if(intent != null){
+                    mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(getActivity(),"로그아웃",Toast.LENGTH_SHORT);
+                            // 로그인 화면으로 이동
+                            myStartActivity(LoginActivity.class);
+                        }
+                    });
+                }else {
+                    Toast.makeText(getActivity(), "로그아웃", Toast.LENGTH_SHORT);
+                    // 로그인 화면으로 이동
+                    myStartActivity(LoginActivity.class);
+                }
                 break;
             case R.id.btn_setting_user:
                 myStartActivity(UserInfoSettingActivity.class);
